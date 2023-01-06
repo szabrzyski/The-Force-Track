@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from "./components/Login.vue";
+import Index from "./components/Index.vue";
 
 const router = createRouter({
     scrollBehavior() {
@@ -10,6 +11,12 @@ const router = createRouter({
     },
     history: createWebHistory(),
     routes: [
+        {
+            path: '/',
+            name: 'index',
+            component: Index,
+            meta: { title: 'The Force Track'}
+        },
         {
             path: '/login',
             name: 'login',

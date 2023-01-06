@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'TheForceTrack')</title>
+    <title>@yield('title', 'The Force Track')</title>
     @vite(['resources/css/app.css'])
     @stack('css')
     @stack('head')

@@ -13,5 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+// Index
+Route::view('/', 'index')->name('index')->middleware(['auth']);
+
 // Login
 Route::view('/login', 'login')->name('login')->middleware(['guest']);
