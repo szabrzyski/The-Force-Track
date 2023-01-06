@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'TheForceTrack')</title>
+    @vite(['resources/css/app.css'])
+    @stack('css')
     @stack('head')
     @vite(['resources/js/app.js'])
     @stack('js')
