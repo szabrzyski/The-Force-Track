@@ -1,0 +1,150 @@
+# Volumes
+
+volumes:
+    mariadb:
+        driver: local
+    redis:
+        driver: local
+
+# Network
+
+networks:
+    theforcetrack:
+        driver: bridge
+
+# Config
+
+configs:
+    php:
+        file: ./docker/php/local.ini
+    nginx:
+        file: ./docker/nginx/conf.d
+
+# Services
+
+services:
+
+    # PHP-FPM
+
+    php:
+        build:
+            context: ./docker
+            args:
+                LINUX_USER_ID: $DOCKER_LINUX_USER_ID
+                LINUX_USER: $DOCKER_LINUX_USER
+                LINUX_PASSWORD: $DOCKER_LINUX_PASSWORD
+        container_name: php
+        working_dir: $DOCKER_WORKDIR
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - ./:$DOCKER_WORKDIR
+            - .env:$DOCKER_WORKDIR/.env
+            - /etc/ssl:/etc/ssl
+        configs:
+            - source: php
+              target: /usr/local/etc/php/conf.d/local.ini
+        networks:
+            - theforcetrack
+        ports:
+            - "9000:9000"
+            - "6001:6001"
+            - "5173:5173"
+        user: $DOCKER_LINUX_USER
+
+    # NGINX
+
+    nginx:
+        image: nginx
+        container_name: nginx
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - ./:$DOCKER_WORKDIR
+            - /etc/ssl:/etc/ssl
+        configs:
+            - source: nginx
+              target: /etc/nginx/conf.d
+        networks:
+            - theforcetrack
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - php
+        healthcheck:
+            test: [ "CMD", "service", "nginx", "status" ]
+            retries: 3
+            timeout: 5s
+            interval: 60s
+
+    # MariaDB
+
+    mariadb:
+        image: mariadb
+        container_name: mariadb
+        restart: unless-stopped
+        tty: true
+        environment:
+            MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+            MARIADB_DATABASE: ${DB_DATABASE}
+            MARIADB_USER: ${DB_USERNAME}
+            MARIADB_PASSWORD: ${DB_PASSWORD}
+            MARIADB_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - mariadb:/var/lib/mysql
+        networks:
+            - theforcetrack
+        ports:
+            - "3306:3306"
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+            retries: 3
+            timeout: 5s
+            interval: 60s
+
+    # Mailcatcher 
+
+    mailcatcher:
+        image: schickling/mailcatcher
+        container_name: mailcatcher
+        restart: unless-stopped
+        networks:
+            - theforcetrack
+        ports:
+            - "1080:1080"
+            - "1025:1025"
+
+    # Redis
+
+    redis:
+        image: redis
+        container_name: redis
+        restart: unless-stopped
+        volumes:
+            - redis:/data
+        networks:
+            - theforcetrack
+        ports:
+            - "6379:6379"
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+            retries: 3
+            timeout: 5s
+            interval: 60s
+
+    # phpMyAdmin 
+
+    # phpmyadmin:
+    #     image: phpmyadmin
+    #     container_name: phpmyadmin
+    #     restart: unless-stopped
+    #     environment:
+    #         PMA_HOST: mariadb
+    #         UPLOAD_LIMIT: 1G
+    #     networks:
+    #         - theforcetrack
+    #     ports:
+    #         - 8080:80
+    #     depends_on:
+    #         - mariadb
