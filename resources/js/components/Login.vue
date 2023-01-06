@@ -33,8 +33,8 @@ const password = ref("");
                                     v-text="1==2 ? 'Please wait...' : 'Continue'"></button>
                             </div>
                             <div class="col-12 text-end">
-                                <router-link class="me-4" :to="{ name: 'index' }">Create new account</router-link>
-                                <router-link :to="{ name: 'index' }">Reset password</router-link>
+                                <router-link class="me-4" :to="{ name: 'register' }">Create new account</router-link>
+                                <router-link :to="{ name: 'resetPassword' }">Reset password</router-link>
                             </div>
                         </div>
                     </div>
