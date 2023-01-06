@@ -1,16 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Views
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
  */
 
 // Index
@@ -27,3 +23,15 @@ Route::view('/resetPassword', 'resetPassword')->name('resetPassword')->middlewar
 
 // Reset password finish
 Route::view('/resetPasswordFinish', 'resetPasswordFinish')->name('resetPasswordFinish')->middleware(['guest']);
+
+/*
+|--------------------------------------------------------------------------
+| Actions
+|--------------------------------------------------------------------------
+ */
+
+// Create account
+Route::post('/createAccount', [RegisterController::class, 'createAccount'])->name('createAccount')->middleware('guest');
+
+// Activate account
+Route::patch('/activateAccount/{verificationCode}', [RegisterController::class, 'activateAccount'])->name('activateAccount')->middleware(['guest']);
