@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AppController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ResetPasswordController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +25,7 @@ Route::view('/register', 'register')->name('register')->middleware(['guest']);
 Route::view('/resetPassword', 'resetPassword')->name('resetPassword')->middleware(['guest']);
 
 // Reset password finish
-Route::view('/resetPasswordFinish', 'resetPasswordFinish')->name('resetPasswordFinish')->middleware(['guest']);
+Route::view('/setNewPassword/{verificationCode}', 'resetPasswordFinish')->name('setNewPassword')->middleware(['guest']);
 
 /*
 |--------------------------------------------------------------------------
@@ -34,4 +37,19 @@ Route::view('/resetPasswordFinish', 'resetPasswordFinish')->name('resetPasswordF
 Route::post('/createAccount', [RegisterController::class, 'createAccount'])->name('createAccount')->middleware('guest');
 
 // Activate account
-Route::patch('/activateAccount/{verificationCode}', [RegisterController::class, 'activateAccount'])->name('activateAccount')->middleware(['guest']);
+Route::get('/activateAccount/{verificationCode}', [RegisterController::class, 'activateAccount'])->name('activateAccount')->middleware(['guest']);
+
+// Initialize application
+Route::get('/initialize', [AppController::class, 'initialize'])->name('initializeApp');
+
+// Login
+Route::post('/login', [LoginController::class, 'loginUser'])->name('loginUser')->middleware(['guest']);
+
+// Logout
+Route::get('/logout', [LoginController::class, 'logoutUser'])->name('logoutUser')->middleware('auth');
+
+// Send password reset link
+Route::post('/resetPassword', [ResetPasswordController::class, 'resetPassword'])->name('resetPassword')->middleware('guest');
+
+// Update the password
+Route::patch('/resetPasswordFinish', [ResetPasswordController::class, 'resetPasswordFinish'])->name('resetPasswordFinish')->middleware('guest');

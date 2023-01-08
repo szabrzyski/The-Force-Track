@@ -14,10 +14,8 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-
     public function createAccount(Request $request)
     {
-
         // Validate user data
 
         $validator = Validator::make(
@@ -28,8 +26,8 @@ class RegisterController extends Controller
             ],
             [
                 'email.unique' => 'E-mail address already exists',
-                'email.*' => 'Wrong e-mail address',
-                'password.*' => 'Wrong password',
+                'email.*' => 'Invalid e-mail address',
+                'password.*' => 'Invalid password',
             ]
         );
 
@@ -47,15 +45,14 @@ class RegisterController extends Controller
         $newUser->verification_code = $verificationCode;
 
         if ($newUser->save()) {
-
             // Send verification link
 
             $email = new VerificationEmail(Crypt::encryptString($verificationCode));
             SendEmail::dispatch($newUser->email, $email);
             $request->session()->put('userEmail', $newUser->email);
+
             return response()->json('Success', 200);
         } else {
-
             // An error occured when saving the user
 
             return response()->json('An error occured', 420);
@@ -71,54 +68,49 @@ class RegisterController extends Controller
         $user = User::where('verification_code', $verificationCode)->first();
 
         if ($user) {
-
-            if (!$user->verificationCodeIsValid()) {
-
+            if (! $user->verificationCodeIsValid()) {
                 // Verification code expired
 
                 session(['alert' => json_encode(['message' => 'The activation link is expired.', 'type' => 'error'])]);
+
                 return redirect()->route('login');
             } else {
-
                 // Verification code is valid, activate the user account
 
                 $user->verification_code = null;
                 $user->email_verified_at = now();
 
                 if ($user->save()) {
-
                     if ($request->session()->get('userEmail') === $user->email) {
-
                         // Log in & redirect the user to homepage if his e-mail is in the session
 
                         $request->session()->forget('userEmail');
                         Auth::login($user);
                         $request->session()->regenerate();
                         session(['alert' => json_encode(['page' => 'index', 'message' => 'Your account is active.', 'type' => 'success'])]);
+
                         return redirect()->route('index');
                     }
 
                     // Redirect the user to login page if his e-mail is not in the session
 
                     session(['alert' => json_encode(['page' => 'login', 'message' => 'Your account is active, you can log in.', 'type' => 'success'])]);
+
                     return redirect()->route('login', ['email' => $user->email]);
-
                 } else {
-
                     // An error occured when saving the user
 
                     session(['alert' => json_encode(['page' => 'login', 'message' => 'An error occuerd.', 'type' => 'error'])]);
+
                     return redirect()->route('login');
                 }
-
             }
         } else {
-
             // There's no user associated with provided verification code
 
             session(['alert' => json_encode(['page' => 'logowanie', 'message' => 'The activation link is invalid.', 'type' => 'error'])]);
+
             return redirect()->route('login');
         }
     }
-
 }

@@ -3,13 +3,17 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../stores/globalStore.js';
+import { useUserStore } from '../stores/userStore.js';
 import Alert from './partials/Alert.vue';
+
+const emit = defineEmits(['viewLoaded']);
 
 const email = ref("");
 const password = ref("");
 const registrationInProgress = ref(false);
 
 const globalStore = useGlobalStore();
+const userStore = useUserStore();
 const router = useRouter();
 
 //Form validation
@@ -57,13 +61,14 @@ async function createAccount() {
         password: password.value,
     };
 
-    let requestResponse = await axios({
+    let axiosResponse = await axios({
         method: 'POST',
         url: '/createAccount',
         timeout: 30000,
         data: parameters,
     })
         .then((response) => {
+            userStore.setLoginData(email.value, password.value);
             globalStore.setAlert('login', 'success', 'Check your e-mail to activate your account.');
             router.push({
                 name: 'login',
@@ -76,6 +81,8 @@ async function createAccount() {
         })
 
 }
+
+emit('viewLoaded');
 
 </script>
 

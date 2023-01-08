@@ -1,9 +1,12 @@
 
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useUserStore } from './userStore.js';
 
 export const useGlobalStore = defineStore('globalStore', () => {
 
+    const loadingInProgress = ref(true);
+    const errorOccured = ref(false);
     const toastMessageElement = ref(null);
     const toastMessage = ref("");
     const alert = ref({
@@ -11,7 +14,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
         type: null,
         message: null
     });
-
+    const userStore = useUserStore();
 
     // Set toast message element
 
@@ -48,6 +51,34 @@ export const useGlobalStore = defineStore('globalStore', () => {
         }
     }
 
+    // Initialize application
+
+    async function initializeApp() {
+
+        loadingInProgress.value = true;
+        errorOccured.value = false;
+
+        let axiosResponse = await axios({
+            method: 'GET',
+            url: '/initialize',
+            timeout: 30000,
+        })
+            .then((response) => {
+                let sessionAlert = response.data.alert;
+                if (sessionAlert) {
+                    alert.value = JSON.parse(sessionAlert);
+                }
+                userStore.setUser(response.data.user);
+            })
+            .catch(function (error) {
+                errorOccured.value = true;
+            })
+            .then(function () {
+                loadingInProgress.value = false;
+                return errorOccured.value == false;
+            });
+    }
+
     // Handle errors
 
     function handleError(error) {
@@ -60,6 +91,9 @@ export const useGlobalStore = defineStore('globalStore', () => {
             switch (errorCode) {
                 case 0:
                     message = 'No response from the server';
+                    break;
+                case 401:
+                    userStore.redirectToLogin();
                     break;
                 case 403:
                     message = 'Unauthorized';
@@ -116,12 +150,16 @@ export const useGlobalStore = defineStore('globalStore', () => {
     }
 
     return {
+        loadingInProgress,
+        errorOccured,
         toastMessageElement,
         toastMessage,
         alert,
         setToastMessageElement,
+        showToastMessage,
         setAlert,
         resetAlert,
+        initializeApp,
         handleError,
     }
 

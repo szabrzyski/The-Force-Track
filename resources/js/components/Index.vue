@@ -1,4 +1,9 @@
 <script setup>
+
+const emit = defineEmits(['viewLoaded']);
+
+emit('viewLoaded');
+
 </script>
 
 <template>

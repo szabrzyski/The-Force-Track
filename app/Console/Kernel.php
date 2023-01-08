@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -17,7 +18,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('model:prune', [
-            '--model' => [User::class],
+            '--model' => [User::class, PasswordReset::class],
         ])->daily()->withoutOverlapping();
     }
 
@@ -28,7 +29,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

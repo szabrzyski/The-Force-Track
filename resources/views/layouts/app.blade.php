@@ -14,6 +14,8 @@
 
 <body>
     <main id="app">
+        <div class="app-loading">
+        </div>
     </main>
 </body>
 

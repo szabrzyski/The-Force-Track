@@ -22,14 +22,14 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be visible for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'verification_code',
+    protected $visible = [
+        'id',
+        'email',
+        'admin',
     ];
 
     /**
@@ -46,6 +46,16 @@ class User extends Authenticatable
         return static::whereNull('email_verified_at')->where('created_at', '<', now()->subHours(48));
     }
 
+    public function isVerified()
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    public function isAdmin()
+    {
+        return $this->admin === true;
+    }
+
     public function verificationCodeIsValid()
     {
         $actualTime = Carbon::now();
@@ -54,5 +64,4 @@ class User extends Authenticatable
 
         return $timeDifference < 48;
     }
-
 }

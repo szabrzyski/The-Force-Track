@@ -1,4 +1,9 @@
 <script setup>
+
+import { useUserStore } from '../../stores/userStore.js';
+
+const userStore = useUserStore();
+
 </script>
 
 <template>
@@ -25,7 +30,12 @@
                             </div>
                             <div class="col-auto pe-0">
                                 <li class="nav-item">
-                                    <router-link class="nav-link p-0" activeClass="active" :to="{ name: 'login' }"><i
+                                    <a v-if="userStore.user" class="nav-link p-0" href="#"
+                                        v-on:click.prevent="userStore.logoutUser()"><i
+                                            class="d-sm-none fa-solid fa-xl fa-right-from-bracket fa-flip-horizontal"></i><span
+                                            class="d-none d-sm-block fs-5">Log out</span></a>
+                                    <router-link v-else class="nav-link p-0" activeClass="active"
+                                        :to="{ name: 'login' }"><i
                                             class="d-sm-none fa-solid fa-xl fa-right-from-bracket"></i><span
                                             class="d-none d-sm-block fs-5">Log in</span></router-link>
 

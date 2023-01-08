@@ -39,5 +39,4 @@ class SendEmail implements ShouldQueue
     {
         Mail::to($this->emailAddress)->send($this->email);
     }
-
 }
