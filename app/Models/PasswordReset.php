@@ -11,11 +11,6 @@ class PasswordReset extends Model
 {
     use Prunable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = ['*'];
 
     protected $table = 'password_resets';

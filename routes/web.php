@@ -4,6 +4,7 @@ use App\Http\Controllers\AppController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +33,9 @@ Route::view('/setNewPassword/{verificationCode}', 'resetPasswordFinish')->name('
 | Actions
 |--------------------------------------------------------------------------
  */
+
+ // Test
+Route::get('/test', [TestController::class, 'test'])->name('test')->middleware('admin');
 
 // Create account
 Route::post('/createAccount', [RegisterController::class, 'createAccount'])->name('createAccount')->middleware('guest');

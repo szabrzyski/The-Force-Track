@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,15 +10,9 @@ class User extends Authenticatable
 {
     use Prunable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'email',
-        'password',
-    ];
+    protected $guarded = ['*'];
+
+    protected $table = 'users';
 
     /**
      * The attributes that should be visible for serialization.
@@ -46,6 +39,11 @@ class User extends Authenticatable
         return static::whereNull('email_verified_at')->where('created_at', '<', now()->subHours(48));
     }
 
+    public function issues()
+    {
+        return $this->hasMany(Issue::class, 'user_id', 'id');
+    }
+
     public function isVerified()
     {
         return $this->email_verified_at !== null;
@@ -53,7 +51,7 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->admin === true;
+        return $this->admin == true;
     }
 
     public function verificationCodeIsValid()
