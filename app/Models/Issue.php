@@ -28,7 +28,6 @@ class Issue extends Model
 
     public function status()
     {
-        return $this->belongsTo(Category::class, 'status_id', 'id');
+        return $this->belongsTo(Status::class, 'status_id', 'id');
     }
-
 }

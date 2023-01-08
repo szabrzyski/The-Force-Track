@@ -11,13 +11,13 @@ class IssueController extends Controller
 {
     public function initialize()
     {
-        $statuses = Status::all();
+        $statuses = Status::orderByDesc('default')->get();
+
         return response()->json($statuses, 200);
     }
 
     public function loadIssues(Request $request)
     {
-
         $validator = Validator::make(
             $request->all(),
             [
@@ -36,18 +36,15 @@ class IssueController extends Controller
         $selectedStatuses = $request->selectedStatuses;
 
         $issues = Issue::when($selectedStatuses !== null, function ($query) use ($selectedStatuses) {
-
             // Get only those issues with selected statuses
 
             $query->whereIn('status_id', $selectedStatuses);
-        })->when(!$user->isAdmin(), function ($query) use ($user) {
-
+        })->when(! $user->isAdmin(), function ($query) use ($user) {
             // If the user is admin, get all issues. Otherwise get only those issues owned by the user.
 
             $query->where('user_id', $user->id);
-        })->with('category')->paginate(24)->onEachSide(1);
+        })->with(['category', 'status'])->orderByDesc('updated_at')->paginate(24)->onEachSide(1);
 
         return response()->json($issues, 200);
     }
-
 }

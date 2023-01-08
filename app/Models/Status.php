@@ -14,5 +14,4 @@ class Status extends Model
     {
         return $this->hasMany(Issue::class, 'status_id', 'id');
     }
-
 }

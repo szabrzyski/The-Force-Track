@@ -14,5 +14,4 @@ class Category extends Model
     {
         return $this->hasMany(Issue::class, 'category_id', 'id');
     }
-
 }
