@@ -2,7 +2,7 @@ import { useGlobalStore } from './stores/globalStore';
 import { useUserStore } from './stores/userStore';
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from "./components/Login.vue";
-import Index from "./components/Index.vue";
+import Issues from "./components/Issues.vue";
 import Register from "./components/Register.vue";
 import ResetPassword from "./components/ResetPassword.vue";
 import ResetPasswordFinish from "./components/ResetPasswordFinish.vue";
@@ -18,8 +18,8 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'index',
-            component: Index,
+            name: 'issues',
+            component: Issues,
             meta: { title: 'The Force Track', onlyLoggedUser: true }
         },
         {
@@ -50,7 +50,7 @@ const router = createRouter({
         {
             path: '/:pathMatch(.*)*',
             name: 'notFound',
-            redirect: { name: 'index' }
+            redirect: { name: 'issues' }
         },
     ],
 });
@@ -74,11 +74,11 @@ router.beforeEach(async (to) => {
         }
     } else if (to.meta.onlyGuest && loggedUser) {
         return {
-            name: 'index',
+            name: 'issues',
         }
     } else if (to.meta.onlyAdmin && !loggedUserIsAdmin) {
         return {
-            name: 'index',
+            name: 'issues',
         }
     }
 })

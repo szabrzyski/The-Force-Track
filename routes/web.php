@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\IssueController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetPasswordController;
@@ -13,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
  */
 
-// Index
-Route::view('/', 'index')->name('index')->middleware(['auth']);
+// Issues
+Route::view('/', 'issues')->name('issues')->middleware(['auth']);
 
 // Login
 Route::view('/login', 'login')->name('login')->middleware(['guest']);
@@ -34,7 +35,7 @@ Route::view('/setNewPassword/{verificationCode}', 'resetPasswordFinish')->name('
 |--------------------------------------------------------------------------
  */
 
- // Test
+// Test
 Route::get('/test', [TestController::class, 'test'])->name('test')->middleware('admin');
 
 // Create account
@@ -44,7 +45,7 @@ Route::post('/createAccount', [RegisterController::class, 'createAccount'])->nam
 Route::get('/activateAccount/{verificationCode}', [RegisterController::class, 'activateAccount'])->name('activateAccount')->middleware(['guest']);
 
 // Initialize application
-Route::get('/initialize', [AppController::class, 'initialize'])->name('initializeApp');
+Route::get('/initializeApp', [AppController::class, 'initialize'])->name('initializeApp');
 
 // Login
 Route::post('/login', [LoginController::class, 'loginUser'])->name('loginUser')->middleware(['guest']);
@@ -57,3 +58,9 @@ Route::post('/resetPassword', [ResetPasswordController::class, 'resetPassword'])
 
 // Update the password
 Route::patch('/resetPasswordFinish', [ResetPasswordController::class, 'resetPasswordFinish'])->name('resetPasswordFinish')->middleware('guest');
+
+// Initialize issues page
+Route::get('/initializeIssues', [IssueController::class, 'initialize'])->name('initializeIssues')->middleware('auth');
+
+// Load issues list
+Route::post('/loadIssues', [IssueController::class, 'loadIssues'])->name('loadIssues')->middleware('auth');

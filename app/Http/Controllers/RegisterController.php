@@ -87,9 +87,9 @@ class RegisterController extends Controller
                         $request->session()->forget('userEmail');
                         Auth::login($user);
                         $request->session()->regenerate();
-                        session(['alert' => json_encode(['page' => 'index', 'message' => 'Your account is active.', 'type' => 'success'])]);
+                        session(['alert' => json_encode(['page' => 'issues', 'message' => 'Your account is active.', 'type' => 'success'])]);
 
-                        return redirect()->route('index');
+                        return redirect()->route('issues');
                     }
 
                     // Redirect the user to login page if his e-mail is not in the session

@@ -16,12 +16,15 @@ return new class extends Migration
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('status_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('subject');
             $table->text('description');
             $table->enum('status', ['Open', 'In progress', 'Closed']);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate()
+                ->restrictOnDelete();
+            $table->foreign('status_id')->references('id')->on('statuses')->cascadeOnUpdate()
                 ->restrictOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()
                 ->nullOnDelete();

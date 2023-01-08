@@ -35,7 +35,7 @@ class LoginController extends Controller
             $user = Auth::user();
             $request->session()->regenerate();
 
-            $redirectTo = redirect()->getIntendedUrl() ?? route('index', [], false);
+            $redirectTo = redirect()->getIntendedUrl() ?? route('issues', [], false);
 
             return response()->json(['redirectTo' => $redirectTo, 'user' => $user], 200);
         }

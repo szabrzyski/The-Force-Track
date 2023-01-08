@@ -60,7 +60,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
 
         let axiosResponse = await axios({
             method: 'GET',
-            url: '/initialize',
+            url: '/initializeApp',
             timeout: 30000,
         })
             .then((response) => {
@@ -77,6 +77,16 @@ export const useGlobalStore = defineStore('globalStore', () => {
                 loadingInProgress.value = false;
                 return errorOccured.value == false;
             });
+    }
+
+        // Scroll page to the top
+
+    function scrollToTop(smooth = true) {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
     }
 
     // Handle errors
@@ -160,6 +170,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
         setAlert,
         resetAlert,
         initializeApp,
+        scrollToTop,
         handleError,
     }
 

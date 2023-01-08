@@ -51,7 +51,7 @@ async function loginUser() {
                 let redirectTo = response.data.redirectTo;
                 let queryRedirect = route.query.redirect;
                 var redirect = queryRedirect ?? redirectTo ?? router.resolve({
-                    name: 'index',
+                    name: 'issues',
                 }).path;
                 userStore.setUser(user);
             }
