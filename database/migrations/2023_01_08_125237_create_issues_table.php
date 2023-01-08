@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('subject');
             $table->text('description');
-            $table->enum('status', ['Open', 'In progress', 'Closed']);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate()
                 ->restrictOnDelete();

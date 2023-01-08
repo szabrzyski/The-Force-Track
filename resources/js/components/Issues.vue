@@ -1,8 +1,9 @@
 <script setup>
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import Alert from './partials/Alert.vue';
+import PaginationBar from './partials/PaginationBar.vue';
 
 const emit = defineEmits(['viewLoaded']);
 
@@ -15,6 +16,11 @@ const issues = ref([]);
 const statuses = ref([]);
 const selectedStatuses = ref([]);
 
+const defaultSelectedStatuses = computed(() => {
+    let defaultStatuses = statuses.value.filter(status => status.default == true);
+    return defaultStatuses.map((status) => status.id);
+});
+
 function initialize() {
     loadingInProgress.value = true;
     let axiosResponse = axios({
@@ -24,6 +30,7 @@ function initialize() {
     })
         .then((response) => {
             statuses.value = response.data;
+            selectedStatuses.value = defaultSelectedStatuses.value;
             loadIssues();
         })
         .catch(function (error) {
@@ -55,6 +62,7 @@ async function loadIssues(page = 1, scroll = false) {
         timeout: 30000,
         data: {
             page: page,
+            selectedStatuses: selectedStatuses.value
         },
     })
         .then((response) => {
@@ -86,14 +94,15 @@ initialize();
                     </h5>
                 </div>
                 <div class="col-6 text-end">
-
-                    <h5 class="text-secondary d-inline me-2">Status:
-                    </h5>
-                    <div v-for="status in statuses" :key="status.id" class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" :id="status.id" :value="status.id"
-                            v-model="selectedStatuses">
-                        <label class="form-check-label" :for="status.id">{{ status.name }}</label>
-                    </div>
+                    <fieldset :disabled="issuesLoadingInProgress">
+                        <h5 class="text-secondary d-inline me-2">Status:
+                        </h5>
+                        <div v-for="status in statuses" :key="status.id" class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" :id="status.id" :value="status.id"
+                                v-model="selectedStatuses">
+                            <label class="form-check-label" :for="status.id">{{ status.name }}</label>
+                        </div>
+                    </fieldset>
                 </div>
                 <div class="col-12 mt-lg-3">
                     <div class="col-12">
@@ -130,6 +139,8 @@ initialize();
                         </table>
                     </div>
                 </div>
+                <PaginationBar v-if="issues.data && issues.last_page != 1" v-on:paginateIssues="loadIssues"
+                    :issues="issues" />
             </div>
         </div>
     </template>

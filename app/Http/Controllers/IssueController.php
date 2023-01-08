@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Issue;
 use App\Models\Status;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class IssueController extends Controller
 {
@@ -16,11 +17,37 @@ class IssueController extends Controller
 
     public function loadIssues(Request $request)
     {
-      
-       $issues = Issue::with('category')->paginate(24)->onEachSide(1);
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'selectedStatuses' => 'sometimes|present|array|exists:statuses,id',
+            ],
+            [
+                'selectedStatuses.*' => 'Invalid selected statuses',
+            ]
+        );
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return response()->json($validator->errors(), 427);
+        }
+
+        $user = $request->user();
+        $selectedStatuses = $request->selectedStatuses;
+
+        $issues = Issue::when($selectedStatuses !== null, function ($query) use ($selectedStatuses) {
+
+            // Get only those issues with selected statuses
+
+            $query->whereIn('status_id', $selectedStatuses);
+        })->when(!$user->isAdmin(), function ($query) use ($user) {
+
+            // If the user is admin, get all issues. Otherwise get only those issues owned by the user.
+
+            $query->where('user_id', $user->id);
+        })->with('category')->paginate(24)->onEachSide(1);
 
         return response()->json($issues, 200);
     }
-
 
 }
