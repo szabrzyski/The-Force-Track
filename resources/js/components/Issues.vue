@@ -20,7 +20,11 @@ const statuses = ref([]);
 const selectedStatuses = ref([]);
 
 watch(selectedStatuses, (newSelectedStatuses) => {
-    globalStore.saveLocalData('selectedStatuses', newSelectedStatuses, true);
+    if (!loadingInProgress.value) {
+        globalStore.saveLocalData('selectedStatuses', newSelectedStatuses, true);
+        loadIssues();
+    }
+
 })
 
 // Get statuses that are selected by default on the page
