@@ -7,6 +7,7 @@ use App\Models\Issue;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\IssueStatusChanged;
 
 class IssueController extends Controller
 {
@@ -60,7 +61,8 @@ class IssueController extends Controller
 
         $issues = Issue::when($selectedStatuses !== null, function ($query) use ($selectedStatuses) {
             $query->whereIn('status_id', $selectedStatuses);
-        })->when(! $user->isAdmin(), function ($query) use ($user) {
+        })->when(!$user->isAdmin(), function ($query) use ($user) {
+
             // If the user is admin, get all issues. Otherwise, get only those issues owned by the user.
 
             $query->where('user_id', $user->id);
@@ -121,13 +123,32 @@ class IssueController extends Controller
             ]
         );
 
+        // Check if the new status differs from the current status
+
+        $newStatus = $request->newStatus;
+
+        $validator->after(function ($validator) use ($issue, $newStatus) {
+            if ($issue->status_id == $newStatus) {
+                $validator->errors()->add(
+                    'newStatus', 'Issue already has this status'
+                );
+            }
+        });
+
         if ($validator->stopOnFirstFailure()->fails()) {
             return response()->json($validator->errors(), 427);
         }
 
-        $issue->status_id = $request->newStatus;
+        $status = Status::where('id',$newStatus)->firstOrFail();
+
+        $issue->status()->associate($status);
 
         if ($issue->save()) {
+
+            // Send a notification to the author of the issue
+
+            $issue->user->notify(new IssueStatusChanged($status->name, $issue->id));
+
             return response()->json('Success', 200);
         } else {
             return response()->json('An error occured', 420);

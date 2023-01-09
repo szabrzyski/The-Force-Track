@@ -32,6 +32,7 @@ class LoginController extends Controller
         $password = $request->password;
 
         if (Auth::attemptWhen(['email' => $email, 'password' => $password], function ($user) {
+            
             // Allow only verified users to login
 
             return $user->isVerified();

@@ -35,6 +35,7 @@ class ResetPasswordController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
+            
             // There's user associated with provided e-mail
 
             // Generate verification code

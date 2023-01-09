@@ -27,7 +27,7 @@ class SendEmail implements ShouldQueue
      */
     public function __construct(public string $emailAddress, public Mailable $email)
     {
-        $this->onQueue('emaile');
+        $this->onQueue('emails');
     }
 
     /**

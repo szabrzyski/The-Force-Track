@@ -24,7 +24,7 @@ Route::view('/issues/add', 'addIssue')->name('addIssue')->middleware(['auth', 'n
 // Show issue
 Route::get('/issue/{issue}', function (Issue $issue) {
     return view('showIssue');
-})->middleware(['auth', 'can:show,issue']);
+})->name('showIssue')->middleware(['auth', 'can:show,issue']);
 
 // Login
 Route::view('/login', 'login')->name('login')->middleware(['guest']);
