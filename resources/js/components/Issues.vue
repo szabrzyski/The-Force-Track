@@ -5,13 +5,14 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import Alert from './partials/Alert.vue';
 import PaginationBar from './partials/PaginationBar.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const emit = defineEmits(['viewLoaded']);
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
 const router = useRouter();
+const route = useRoute();
 
 const loadingInProgress = ref(true);
 const issuesLoadingInProgress = ref(true);
@@ -24,7 +25,6 @@ watch(selectedStatuses, (newSelectedStatuses) => {
         globalStore.saveLocalData('selectedStatuses', newSelectedStatuses, true);
         loadIssues();
     }
-
 })
 
 // Get statuses that are selected by default on the page
@@ -47,7 +47,8 @@ function initialize() {
             statuses.value = response.data;
             let savedSelectedStatuses = globalStore.getLocalData('selectedStatuses', null, true);
             selectedStatuses.value = savedSelectedStatuses ?? defaultSelectedStatuses.value;
-            loadIssues();
+            let page = route.query.page ?? 1;
+            loadIssues(page);
         })
         .catch(function (error) {
             globalStore.handleError(error);
@@ -79,6 +80,11 @@ async function loadIssues(page = 1, scroll = false) {
     })
         .then((response) => {
             issues.value = response.data;
+            router.replace(
+                {
+                    query: { page: issues.value.current_page }
+                }
+            );
         })
         .catch(function (error) {
             if (!axios.isCancel(error)) {
