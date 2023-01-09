@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TestController;
+use App\Models\Issue;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +19,12 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'issues')->name('issues')->middleware(['auth']);
 
 // Add issue
-Route::view('/issues/add', 'addIssue')->name('addIssue')->middleware(['auth','nonAdmin']);
+Route::view('/issues/add', 'addIssue')->name('addIssue')->middleware(['auth', 'nonAdmin']);
+
+// Show issue
+Route::get('/issue/{issue}', function (Issue $issue) {
+    return view('showIssue');
+})->middleware(['auth', 'can:show,issue']);
 
 // Login
 Route::view('/login', 'login')->name('login')->middleware(['guest']);
@@ -63,13 +69,19 @@ Route::post('/resetPassword', [ResetPasswordController::class, 'resetPassword'])
 Route::patch('/resetPasswordFinish', [ResetPasswordController::class, 'resetPasswordFinish'])->name('resetPasswordFinish')->middleware('guest');
 
 // Initialize issues index page
-Route::get('/initializeIssuesIndexPage', [IssueController::class, 'initializeIssuesIndexPage'])->name('initializeIssuesIndexPage')->middleware('auth');
+Route::get('/issues/initializeIssuesIndexPage', [IssueController::class, 'initializeIssuesIndexPage'])->name('initializeIssuesIndexPage')->middleware('auth');
 
 // Initialize add issue page
-Route::get('/initializeAddIssuePage', [IssueController::class, 'initializeAddIssuePage'])->name('initializeAddIssuePage')->middleware('auth');
+Route::get('/issues/initializeAddIssuePage', [IssueController::class, 'initializeAddIssuePage'])->name('initializeAddIssuePage')->middleware('auth');
 
 // Load issues list
-Route::post('/loadIssues', [IssueController::class, 'loadIssues'])->name('loadIssues')->middleware('auth');
+Route::post('/issues/load', [IssueController::class, 'loadIssues'])->name('loadIssues')->middleware('auth');
 
 // Add issue
-Route::post('/issues/add', [IssueController::class, 'addIssue'])->name('addIssue')->middleware(['auth','nonAdmin']);
+Route::post('/issues/add', [IssueController::class, 'addIssue'])->name('addIssue')->middleware(['nonAdmin']);
+
+// Load issue
+Route::get('/issue/{issue}/initializeIssueDetailsPage', [IssueController::class, 'initializeIssueDetailsPage'])->name('initializeIssueDetailsPage')->middleware(['auth', 'can:show,issue']);
+
+// Update issue status
+Route::patch('/issue/{issue}/updateStatus', [IssueController::class, 'updateIssueStatus'])->name('updateIssueStatus')->middleware(['admin']);

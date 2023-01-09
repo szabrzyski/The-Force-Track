@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from "./components/Login.vue";
 import Issues from "./components/Issues.vue";
 import AddIssue from "./components/AddIssue.vue";
+import ShowIssue from "./components/ShowIssue.vue";
 import Register from "./components/Register.vue";
 import ResetPassword from "./components/ResetPassword.vue";
 import ResetPasswordFinish from "./components/ResetPasswordFinish.vue";
@@ -22,6 +23,13 @@ const router = createRouter({
             name: 'issues',
             component: Issues,
             meta: { title: 'The Force Track', onlyLoggedUser: true }
+        },
+        {
+            path: '/issue/:issueId',
+            name: 'showIssue',
+            component: ShowIssue,
+            props: true,
+            meta: { title: 'Issue details', onlyLoggedUser: true }
         },
         {
             path: '/issues/add',

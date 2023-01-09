@@ -24,6 +24,12 @@ class IssueController extends Controller
         return response()->json($categories, 200);
     }
 
+    public function initializeIssueDetailsPage(Request $request, Issue $issue)
+    {
+        $statuses = Status::all();
+        return response()->json(['issue' => $issue->load(['category', 'status']), 'statuses' => $statuses], 200);
+    }
+
     public function loadIssues(Request $request)
     {
         $validator = Validator::make(
@@ -94,6 +100,33 @@ class IssueController extends Controller
         } else {
             return response()->json('An error occured', 420);
         }
+    }
+
+    public function updateIssueStatus(Request $request, Issue $issue)
+    {
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'newStatus' => 'required|integer|numeric|exists:App\Models\Status,id',
+            ],
+            [
+                'newStatus.*' => 'Invalid status',
+            ]
+        );
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return response()->json($validator->errors(), 427);
+        }
+
+        $issue->status_id = $request->newStatus;
+
+        if ($issue->save()) {
+            return response()->json('Success', 200);
+        } else {
+            return response()->json('An error occured', 420);
+        }
+
     }
 
 }

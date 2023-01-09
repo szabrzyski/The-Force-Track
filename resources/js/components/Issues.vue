@@ -5,11 +5,13 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import Alert from './partials/Alert.vue';
 import PaginationBar from './partials/PaginationBar.vue';
+import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['viewLoaded']);
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
+const router = useRouter();
 
 const loadingInProgress = ref(true);
 const issuesLoadingInProgress = ref(true);
@@ -27,7 +29,7 @@ function initialize() {
     loadingInProgress.value = true;
     let axiosResponse = axios({
         method: 'GET',
-        url: '/initializeIssuesIndexPage',
+        url: '/issues/initializeIssuesIndexPage',
         timeout: 30000,
     })
         .then((response) => {
@@ -60,7 +62,7 @@ async function loadIssues(page = 1, scroll = false) {
     let axiosResponse = await axios({
         signal: issuesLoadingController.value.signal,
         method: 'POST',
-        url: '/loadIssues',
+        url: '/issues/load',
         timeout: 30000,
         data: {
             page: page,
@@ -78,6 +80,13 @@ async function loadIssues(page = 1, scroll = false) {
         .then(function () {
             issuesLoadingInProgress.value = false;
         });
+}
+
+function showIssue(providedIssueId) {
+    router.push({
+        name: 'showIssue',
+        params: { issueId: providedIssueId }
+    });
 }
 
 initialize();
@@ -119,7 +128,8 @@ initialize();
                         <div class="row justify-content-end">
                             <fieldset :disabled="issuesLoadingInProgress">
                                 <div class="col-12 text-end mb-3">
-                                    <router-link class="btn btn-success w-100" :class="{disabled : userStore.user?.admin}" activeClass="active"
+                                    <router-link class="btn btn-success w-100"
+                                        :class="{ disabled: userStore.user?.admin }" activeClass="active"
                                         :to="{ name: 'addIssue' }">{{ (issuesLoadingInProgress &&
                                         !userStore.user?.admin) ? 'Please wait...' : 'Add issue' }}</router-link>
                                 </div>
@@ -138,7 +148,7 @@ initialize();
 
                     </div>
                     <div class="table-responsive mt-3">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th scope="col" class="w-auto">ID</th>
@@ -159,7 +169,8 @@ initialize();
                                         No issues found.
                                     </td>
                                 </tr>
-                                <tr v-else v-for="issue in issues.data" :key="issue.id">
+                                <tr class="pointer" v-else v-for="issue in issues.data" :key="issue.id"
+                                    v-on:click="showIssue(issue.id)">
                                     <th scope="row">{{ issue.id }}</th>
                                     <td>{{ issue.subject }}</td>
                                     <td>{{ issue.category.name }}</td>

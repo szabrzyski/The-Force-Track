@@ -20,7 +20,7 @@ function initialize() {
     loadingInProgress.value = true;
     let axiosResponse = axios({
         method: 'GET',
-        url: '/initializeAddIssuePage',
+        url: '/issues/initializeAddIssuePage',
         timeout: 30000,
     })
         .then((response) => {
@@ -122,7 +122,7 @@ initialize();
                 <div class="col-12">
                     <div class="row">
                         <div class="col-12">
-                            <h5 class="text-secondary d-inline">Add issue
+                            <h5 class="text-secondary">Add issue
                             </h5>
                         </div>
                     </div>
