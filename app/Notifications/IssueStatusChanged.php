@@ -11,6 +11,12 @@ class IssueStatusChanged extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public $tries = 120;
+
+    public $backoff = 60;
+
+    public $deleteWhenMissingModels = true;
+
     /**
      * Create a new notification instance.
      *
