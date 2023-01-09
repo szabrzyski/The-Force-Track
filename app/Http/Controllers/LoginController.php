@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
-
     // Login the user
 
     public function loginUser(Request $request)
@@ -33,7 +32,6 @@ class LoginController extends Controller
         $password = $request->password;
 
         if (Auth::attemptWhen(['email' => $email, 'password' => $password], function ($user) {
-
             // Allow only verified users to login
 
             return $user->isVerified();

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class IssueController extends Controller
 {
-
     // Initialize page for listing issues
 
     public function initializeIssuesIndexPage()
@@ -34,6 +33,7 @@ class IssueController extends Controller
     public function initializeIssueDetailsPage(Request $request, Issue $issue)
     {
         $statuses = Status::all();
+
         return response()->json(['issue' => $issue->load(['category', 'status']), 'statuses' => $statuses], 200);
     }
 
@@ -60,8 +60,7 @@ class IssueController extends Controller
 
         $issues = Issue::when($selectedStatuses !== null, function ($query) use ($selectedStatuses) {
             $query->whereIn('status_id', $selectedStatuses);
-        })->when(!$user->isAdmin(), function ($query) use ($user) {
-
+        })->when(! $user->isAdmin(), function ($query) use ($user) {
             // If the user is admin, get all issues. Otherwise, get only those issues owned by the user.
 
             $query->where('user_id', $user->id);
@@ -74,7 +73,6 @@ class IssueController extends Controller
 
     public function addIssue(Request $request)
     {
-
         $validator = Validator::make(
             $request->all(),
             [
@@ -113,7 +111,6 @@ class IssueController extends Controller
 
     public function updateIssueStatus(Request $request, Issue $issue)
     {
-
         $validator = Validator::make(
             $request->all(),
             [
@@ -135,7 +132,5 @@ class IssueController extends Controller
         } else {
             return response()->json('An error occured', 420);
         }
-
     }
-
 }

@@ -35,7 +35,6 @@ class ResetPasswordController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-
             // There's user associated with provided e-mail
 
             // Generate verification code
@@ -88,6 +87,7 @@ class ResetPasswordController extends Controller
                     $user->password = Hash::make($request->password);
                     if ($user->save()) {
                         $passwordReset->delete();
+
                         return response()->json('Success', 200);
                     } else {
                         return response()->json('An error occured', 420);
