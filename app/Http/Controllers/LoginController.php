@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -41,9 +42,9 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             // Add redirect link if user intended to visit protected page
-            //TODO: fix redirect
 
-            $redirectTo = redirect()->getIntendedUrl() ?? route('issues', [], false);
+            $intendedUrl = redirect()->getIntendedUrl();
+            $redirectTo = $intendedUrl ?  Str::after($intendedUrl, route('issues', [], true)) : route('issues', [], false);
 
             return response()->json(['redirectTo' => $redirectTo, 'user' => $user], 200);
         }
