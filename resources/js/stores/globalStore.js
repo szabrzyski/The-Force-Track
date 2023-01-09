@@ -89,6 +89,20 @@ export const useGlobalStore = defineStore('globalStore', () => {
         });
     }
 
+    // Save data to local storage
+
+    function saveLocalData(key, value, asJson = false) {
+        return localStorage.setItem(key, asJson ? JSON.stringify(value) : value);
+    }
+
+    // Get data from local storage
+
+    function getLocalData(key, defaultValue = '', asObject = false) {
+        let value = localStorage.getItem(key);
+        return value ? asObject ? JSON.parse(value) : value : defaultValue;
+
+    }
+
     // Handle errors
 
     function handleError(error) {
@@ -171,6 +185,8 @@ export const useGlobalStore = defineStore('globalStore', () => {
         resetAlert,
         initializeApp,
         scrollToTop,
+        saveLocalData,
+        getLocalData,
         handleError,
     }
 

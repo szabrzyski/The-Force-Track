@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import Alert from './partials/Alert.vue';
@@ -18,6 +18,10 @@ const issuesLoadingInProgress = ref(true);
 const issues = ref([]);
 const statuses = ref([]);
 const selectedStatuses = ref([]);
+
+watch(selectedStatuses, (newSelectedStatuses) => {
+    globalStore.saveLocalData('selectedStatuses', newSelectedStatuses, true);
+})
 
 // Get statuses that are selected by default on the page
 
@@ -37,7 +41,8 @@ function initialize() {
     })
         .then((response) => {
             statuses.value = response.data;
-            selectedStatuses.value = defaultSelectedStatuses.value;
+            let savedSelectedStatuses = globalStore.getLocalData('selectedStatuses', null, true);
+            selectedStatuses.value = savedSelectedStatuses ?? defaultSelectedStatuses.value;
             loadIssues();
         })
         .catch(function (error) {
