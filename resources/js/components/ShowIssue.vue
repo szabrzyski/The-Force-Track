@@ -79,7 +79,7 @@ async function updateStatus(oldStatus) {
 // Watch for new selected status
 
 watch(selectedStatus, async (newStatus, oldStatus) => {
-    if (oldStatus) {
+    if (!loadingInProgress.value) {
         if (updatingIssueInProgress.value) {
             updatingIssueInProgress.value = false;
         } else {
