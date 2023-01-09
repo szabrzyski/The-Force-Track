@@ -131,22 +131,6 @@ initialize();
                         </div>
                     </div>
                 </div>
-
-                <div class="col-12">
-                    <form>
-                        <div class="row gy-3 gy-sm-4">
-                            <div class="col-12">
-
-                            </div>
-                            <!-- <div class="col-12">
-                                <button type="button" v-on:click="addIssue()" class="btn btn-success w-100"
-                                    :disabled="addingIssueInProgress"
-                                    v-text="addingIssueInProgress ? 'Please wait...' : 'Submit'"></button>
-                            </div> -->
-                        </div>
-                    </form>
-                </div>
-
             </div>
         </div>
     </template>
