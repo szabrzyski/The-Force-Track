@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->hasMany(Issue::class, 'user_id', 'id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'user_id', 'id');
+    }
+
     public function isVerified()
     {
         return $this->email_verified_at !== null;

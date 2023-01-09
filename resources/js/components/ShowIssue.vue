@@ -3,7 +3,6 @@
 import { ref, watch } from 'vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
-import { useRouter } from 'vue-router';
 
 const props = defineProps({
     issueId: [String, Number],
@@ -13,13 +12,13 @@ const emit = defineEmits(['viewLoaded']);
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
-const router = useRouter();
 
 const loadingInProgress = ref(true);
 const updatingIssueInProgress = ref(false);
 const issue = ref(null);
 const selectedStatus = ref(null);
 const statuses = ref([]);
+const comment = ref("");
 
 // Initialize the page
 
@@ -71,6 +70,38 @@ async function updateStatus(oldStatus) {
         })
         .catch(function (error) {
             selectedStatus.value = oldStatus;
+            globalStore.handleError(error);
+        })
+
+}
+
+// Add comment
+
+async function addComment() {
+
+    if (updatingIssueInProgress.value || !comment.value.length > 0) {
+        return false;
+    }
+
+    updatingIssueInProgress.value = true;
+
+    let parameters = {
+        comment: comment.value,
+    };
+
+    let axiosResponse = await axios({
+        method: 'POST',
+        url: '/issue/' + issue.value.id + '/addComment',
+        timeout: 30000,
+        data: parameters,
+    })
+        .then((response) => {
+            updatingIssueInProgress.value = false;
+            issue.value.comments.push(response.data);
+            comment.value = '';
+            globalStore.showToastMessage('Comment added');
+        })
+        .catch(function (error) {
             globalStore.handleError(error);
         })
 
@@ -128,6 +159,30 @@ initialize();
                         <div class="col-12 pre-line max-h-500 overflow-auto">
                             <h6><span class="text-secondary">Description:</span> {{ issue.description }}
                             </h6>
+                        </div>
+                        <div class="col-12">
+                            <h5 class="text-secondary">Comments</h5>
+                        </div>
+                        <div v-if="issue.comments.length" class="col-12 overflow-auto max-h-500">
+                            <div v-for="(comment, index) in issue.comments" :key="comment.id" class="row"
+                                :class="{ 'mb-3': index < issue.comments.length - 1 }">
+                                <div class="col-12 text-truncate text-secondary">
+                                    {{ comment.user.email }} on {{ comment.created_at }}
+                                </div>
+                                <div class="col-12 pre-line">
+                                    {{ comment.comment }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <textarea v-model="comment" class="form-control bg-primary-subtle" minlength="1"
+                                id="comment" maxlength="65535" rows="8" placeholder="Add comment..."
+                                required></textarea>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="button" v-on:click="addComment()" class="btn btn-success w-100"
+                                :disabled="updatingIssueInProgress || !comment.length"
+                                v-text="updatingIssueInProgress ? 'Please wait...' : 'Submit'"></button>
                         </div>
                     </div>
                 </div>

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Issue;
 use App\Models\Status;
+use App\Notifications\IssueStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Notifications\IssueStatusChanged;
 
 class IssueController extends Controller
 {
@@ -35,7 +36,7 @@ class IssueController extends Controller
     {
         $statuses = Status::all();
 
-        return response()->json(['issue' => $issue->load(['category', 'status']), 'statuses' => $statuses], 200);
+        return response()->json(['issue' => $issue->load(['category', 'status', 'comments']), 'statuses' => $statuses], 200);
     }
 
     // Get issues with specified statuses
@@ -139,7 +140,7 @@ class IssueController extends Controller
             return response()->json($validator->errors(), 427);
         }
 
-        $status = Status::where('id',$newStatus)->firstOrFail();
+        $status = Status::where('id', $newStatus)->firstOrFail();
 
         $issue->status()->associate($status);
 
@@ -154,4 +155,38 @@ class IssueController extends Controller
             return response()->json('An error occured', 420);
         }
     }
+
+    // Add new comment
+
+    public function addIssueComment(Request $request, Issue $issue)
+    {
+
+        $this->authorize('show', $issue);
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'comment' => 'required|string|min:1|max:65535',
+            ],
+            [
+                'comment.*' => 'Invalid comment',
+            ]
+        );
+
+        if ($validator->stopOnFirstFailure()->fails()) {
+            return response()->json($validator->errors(), 427);
+        }
+
+        $comment = new Comment;
+        $comment->issue()->associate($issue);
+        $comment->user()->associate($request->user());
+        $comment->comment = $request->comment;
+
+        if ($comment->save()) {
+            return response()->json($comment, 200);
+        } else {
+            return response()->json('An error occured', 420);
+        }
+    }
+
 }

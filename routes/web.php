@@ -85,3 +85,6 @@ Route::get('/issue/{issue}/initializeIssueDetailsPage', [IssueController::class,
 
 // Update issue status
 Route::patch('/issue/{issue}/updateStatus', [IssueController::class, 'updateIssueStatus'])->name('updateIssueStatus')->middleware(['admin']);
+
+// Add issue comment
+Route::post('/issue/{issue}/addComment', [IssueController::class, 'addIssueComment'])->name('addIssueComment')->middleware(['auth']);

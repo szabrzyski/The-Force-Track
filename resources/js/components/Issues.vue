@@ -62,10 +62,7 @@ function initialize() {
 
 // Get issues with specified statuses
 
-async function loadIssues(page = 1, scroll = false) {
-    if (scroll) {
-        globalStore.scrollToTop(false);
-    }
+async function loadIssues(page = 1) {
 
     issuesLoadingInProgress.value = true;
 

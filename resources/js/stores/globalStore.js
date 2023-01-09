@@ -79,16 +79,6 @@ export const useGlobalStore = defineStore('globalStore', () => {
             });
     }
 
-    // Scroll page to the top
-
-    function scrollToTop(smooth = true) {
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: smooth ? 'smooth' : 'auto'
-        });
-    }
-
     // Save data to local storage
 
     function saveLocalData(key, value, asJson = false) {
@@ -184,7 +174,6 @@ export const useGlobalStore = defineStore('globalStore', () => {
         setAlert,
         resetAlert,
         initializeApp,
-        scrollToTop,
         saveLocalData,
         getLocalData,
         handleError,

@@ -30,4 +30,10 @@ class Issue extends Model
     {
         return $this->belongsTo(Status::class, 'status_id', 'id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'issue_id', 'id');
+    }
+
 }
