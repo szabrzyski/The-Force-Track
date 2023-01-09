@@ -15,7 +15,6 @@ const router = useRouter();
 
 const loadingInProgress = ref(true);
 const issuesLoadingInProgress = ref(true);
-const issuesLoadingController = ref(null);
 const issues = ref([]);
 const statuses = ref([]);
 const selectedStatuses = ref([]);
@@ -60,13 +59,7 @@ async function loadIssues(page = 1, scroll = false) {
 
     issuesLoadingInProgress.value = true;
 
-    if (issuesLoadingController.value) {
-        issuesLoadingController.value.abort();
-    }
-
-    issuesLoadingController.value = new AbortController();
     let axiosResponse = await axios({
-        signal: issuesLoadingController.value.signal,
         method: 'POST',
         url: '/issues/load',
         timeout: 30000,
