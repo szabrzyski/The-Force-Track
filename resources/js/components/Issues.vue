@@ -20,10 +20,14 @@ const issues = ref([]);
 const statuses = ref([]);
 const selectedStatuses = ref([]);
 
+// Get statuses that are selected by default on the page
+
 const defaultSelectedStatuses = computed(() => {
     let defaultStatuses = statuses.value.filter(status => status.default == true);
     return defaultStatuses.map((status) => status.id);
 });
+
+// Initialize the page
 
 function initialize() {
     loadingInProgress.value = true;
@@ -46,6 +50,8 @@ function initialize() {
         });
 
 }
+
+// Get issues with specified statuses
 
 async function loadIssues(page = 1, scroll = false) {
     if (scroll) {
@@ -81,6 +87,8 @@ async function loadIssues(page = 1, scroll = false) {
             issuesLoadingInProgress.value = false;
         });
 }
+
+// Redirect to issue details
 
 function showIssue(providedIssueId) {
     router.push({

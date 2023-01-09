@@ -21,6 +21,8 @@ const route = useRoute();
 const password = ref('');
 const passwordResetInProgress = ref(false);
 
+// Update user password
+
 async function finishPasswordReset() {
 
     if (passwordResetInProgress.value || !formValidated()) {
@@ -52,6 +54,8 @@ async function finishPasswordReset() {
         })
 
 }
+
+// Form validation
 
 function formValidated() {
 

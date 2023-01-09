@@ -21,6 +21,8 @@ const issue = ref(null);
 const selectedStatus = ref(null);
 const statuses = ref([]);
 
+// Initialize the page
+
 function initialize() {
     loadingInProgress.value = true;
     let axiosResponse = axios({
@@ -74,6 +76,8 @@ async function updateStatus(oldStatus) {
 
 }
 
+// Watch for new selected status
+
 watch(selectedStatus, async (newStatus, oldStatus) => {
     if (oldStatus) {
         if (updatingIssueInProgress.value) {
@@ -104,8 +108,8 @@ initialize();
                         <div class="col-12">
                             <h6><span class="text-secondary me-2">Status:</span> <select
                                     class="form-select form-select-sm d-inline w-auto bg-primary-subtle"
-                                    id="selectedStatus" :disabled="!userStore.user?.admin || updatingIssueInProgress" v-model="selectedStatus"
-                                    required>
+                                    id="selectedStatus" :disabled="!userStore.user?.admin || updatingIssueInProgress"
+                                    v-model="selectedStatus" required>
                                     <option v-for="status in statuses" :key="status.id" :value="status.id">{{
                                         status.name
                                     }}
@@ -121,7 +125,7 @@ initialize();
                             <h6 class="text-truncate"><span class="text-secondary">Subject:</span> {{ issue.subject }}
                             </h6>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 pre-line max-h-500 overflow-auto">
                             <h6><span class="text-secondary">Description:</span> {{ issue.description }}
                             </h6>
                         </div>

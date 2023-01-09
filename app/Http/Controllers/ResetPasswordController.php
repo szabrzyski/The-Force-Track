@@ -14,6 +14,8 @@ use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
+    // Send password reset link to the user
+
     public function resetPassword(Request $request)
     {
         $validator = Validator::make(
@@ -33,6 +35,11 @@ class ResetPasswordController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
+
+            // There's user associated with provided e-mail
+
+            // Generate verification code
+
             $verificationCode = Hash::make(Str::random(64));
 
             $passwordReset = new PasswordReset;
@@ -46,9 +53,13 @@ class ResetPasswordController extends Controller
                 return response()->json('An error occured', 420);
             }
         }
-        // We'll provide false message even if the user is not found
+
+        // User associated with provided e-mail doesn't exists, but we'll provide false message anyway
+
         return response()->json('Success', 200);
     }
+
+    // Update user password
 
     public function resetPasswordFinish(Request $request)
     {
@@ -68,6 +79,8 @@ class ResetPasswordController extends Controller
 
         $passwordReset = PasswordReset::where('verification_code', $verificationCode)->first();
 
+        // Check if verification code is valid
+
         if ($passwordReset) {
             if ($passwordReset->verificationCodeIsValid()) {
                 $user = User::where('email', $passwordReset->email)->first();
@@ -75,7 +88,6 @@ class ResetPasswordController extends Controller
                     $user->password = Hash::make($request->password);
                     if ($user->save()) {
                         $passwordReset->delete();
-
                         return response()->json('Success', 200);
                     } else {
                         return response()->json('An error occured', 420);

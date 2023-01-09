@@ -15,6 +15,8 @@ const router = useRouter();
 const email = ref("");
 const passwordResetInProgress = ref(false);
 
+// Send the password reset link
+
 async function resetPassword() {
 
     if (passwordResetInProgress.value || !formValidated()) {
@@ -45,6 +47,8 @@ async function resetPassword() {
         })
 
 }
+
+// Form validation
 
 function formValidated() {
 

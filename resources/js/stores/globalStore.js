@@ -79,7 +79,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
             });
     }
 
-        // Scroll page to the top
+    // Scroll page to the top
 
     function scrollToTop(smooth = true) {
         window.scrollTo({

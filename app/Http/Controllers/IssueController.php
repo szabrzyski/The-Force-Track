@@ -10,12 +10,17 @@ use Illuminate\Support\Facades\Validator;
 
 class IssueController extends Controller
 {
+
+    // Initialize page for listing issues
+
     public function initializeIssuesIndexPage()
     {
         $statuses = Status::orderByDesc('default')->get();
 
         return response()->json($statuses, 200);
     }
+
+    // Initialize page for adding issues
 
     public function initializeAddIssuePage()
     {
@@ -24,11 +29,15 @@ class IssueController extends Controller
         return response()->json($categories, 200);
     }
 
+    // Initialize page for issue details
+
     public function initializeIssueDetailsPage(Request $request, Issue $issue)
     {
         $statuses = Status::all();
         return response()->json(['issue' => $issue->load(['category', 'status']), 'statuses' => $statuses], 200);
     }
+
+    // Get issues with specified statuses
 
     public function loadIssues(Request $request)
     {
@@ -50,11 +59,10 @@ class IssueController extends Controller
         $selectedStatuses = $request->selectedStatuses;
 
         $issues = Issue::when($selectedStatuses !== null, function ($query) use ($selectedStatuses) {
-            // Get only those issues with selected statuses
-
             $query->whereIn('status_id', $selectedStatuses);
         })->when(!$user->isAdmin(), function ($query) use ($user) {
-            // If the user is admin, get all issues. Otherwise get only those issues owned by the user.
+
+            // If the user is admin, get all issues. Otherwise, get only those issues owned by the user.
 
             $query->where('user_id', $user->id);
         })->with(['category', 'status'])->orderByDesc('updated_at')->paginate(24)->onEachSide(1);
@@ -62,9 +70,10 @@ class IssueController extends Controller
         return response()->json($issues, 200);
     }
 
+    // Add new issue
+
     public function addIssue(Request $request)
     {
-        // Validate issue data
 
         $validator = Validator::make(
             $request->all(),
@@ -86,8 +95,6 @@ class IssueController extends Controller
 
         $status = Status::where('name', 'Open')->firstOrFail();
 
-        // Create a new issue
-
         $issue = new Issue;
         $issue->user()->associate($request->user());
         $issue->status()->associate($status);
@@ -101,6 +108,8 @@ class IssueController extends Controller
             return response()->json('An error occured', 420);
         }
     }
+
+    // Update issue status
 
     public function updateIssueStatus(Request $request, Issue $issue)
     {

@@ -16,6 +16,8 @@ const category = ref(null);
 const subject = ref("");
 const description = ref("");
 
+// Initialize the page
+
 function initialize() {
     loadingInProgress.value = true;
     let axiosResponse = axios({

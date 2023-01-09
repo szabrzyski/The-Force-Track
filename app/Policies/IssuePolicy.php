@@ -17,8 +17,9 @@ class IssuePolicy
      */
     public function __construct()
     {
-        //
     }
+
+    // Allow everything if the user is admin
 
     public function before(User $user)
     {
@@ -26,6 +27,8 @@ class IssuePolicy
             return true;
         }
     }
+
+    // Check if the user is the author of the post
 
     public function show(User $user, Issue $issue)
     {

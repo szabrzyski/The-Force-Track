@@ -17,6 +17,8 @@ const loginInProgress = ref(false);
 const email = userStore.emailReactive;
 const password = userStore.passwordReactive;
 
+// Initialize the page
+
 function initialize() {
 
     let activatedAccountEmail = route.query.email;
@@ -27,6 +29,8 @@ function initialize() {
     emit('viewLoaded');
 
 }
+
+// Login the user
 
 async function loginUser() {
 
@@ -67,6 +71,8 @@ async function loginUser() {
         })
 
 }
+
+// Form validation
 
 function formValidated() {
 
@@ -113,7 +119,7 @@ initialize();
                                 <div class="col-12">
                                     <input type="email" class="form-control bg-primary-subtle" minlength="1"
                                         maxlength="255" id="email" placeholder="E-mail address" required
-                                        v-model.trim="email" >
+                                        v-model.trim="email">
                                 </div>
                                 <div class="col-12">
                                     <input type="password" class="form-control bg-primary-subtle" minlength="8"

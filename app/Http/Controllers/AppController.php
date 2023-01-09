@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AppController extends Controller
 {
+
+    // Initialize application
+
     public function initialize()
     {
         $user = Auth::user();

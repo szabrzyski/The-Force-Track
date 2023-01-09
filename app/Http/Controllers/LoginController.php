@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
+
+    // Login the user
+
     public function loginUser(Request $request)
     {
         $validator = Validator::make(
@@ -30,10 +33,16 @@ class LoginController extends Controller
         $password = $request->password;
 
         if (Auth::attemptWhen(['email' => $email, 'password' => $password], function ($user) {
+
+            // Allow only verified users to login
+
             return $user->isVerified();
         }, true)) {
             $user = Auth::user();
             $request->session()->regenerate();
+
+            // Add redirect link if user intended to visit protected page
+            //TODO: fix redirect
 
             $redirectTo = redirect()->getIntendedUrl() ?? route('issues', [], false);
 
@@ -42,6 +51,8 @@ class LoginController extends Controller
 
         return response()->json('Invalid login data', 420);
     }
+
+    // Logout the user
 
     public function logoutUser(Request $request)
     {

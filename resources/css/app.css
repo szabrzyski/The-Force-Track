@@ -65,3 +65,11 @@ body {
 .pointer:hover {
     cursor: pointer;
 }
+
+.pre-line {
+    white-space: pre-line;
+}
+
+.max-h-500 {
+    max-height: 500px;
+}

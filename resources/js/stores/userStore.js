@@ -19,14 +19,20 @@ export const useUserStore = defineStore('userStore', () => {
         return password;
     })
 
+    // Set user login data shared between views
+
     function setLoginData(providedEmail, providedPassword) {
         email.value = providedEmail;
         password.value = providedPassword;
     }
 
+    // Set logged user
+
     function setUser(providedUser) {
         user.value = providedUser;
     }
+
+    // Redirect user to login page
 
     function redirectToLogin() {
         if (user.value) {
@@ -36,6 +42,8 @@ export const useUserStore = defineStore('userStore', () => {
             name: 'login',
         });
     }
+
+    // Logout the user
 
     async function logoutUser() {
 
