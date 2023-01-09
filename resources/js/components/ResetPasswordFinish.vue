@@ -81,23 +81,25 @@ emit('viewLoaded');
             <Alert columns='col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6' margins='px-md-3 px-xl-4' />
             <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6 mt-2 mt-sm-1 mt-md-2 mt-lg-4">
                 <div class="card">
-                    <div class="card-header text-center text-bg-secondary py-2">
-                        Set a new password
-                    </div>
-                    <div class="card-body p-sm-4">
-                        <div class="row gy-3 g-sm-4">
-                            <div class="col-12">
-                                <input type="password" class="form-control bg-primary-subtle" minlength="8"
-                                    maxlength="255" id="password" placeholder="Password" required
-                                    v-model.trim="password" v-on:keyup.enter="finishPasswordReset()">
-                            </div>
-                            <div class="col-12">
-                                <button type="button" v-on:click="finishPasswordReset()" class="btn btn-success w-100"
-                                    :disabled="passwordResetInProgress"
-                                    v-text="passwordResetInProgress ? 'Please wait...' : 'Continue'"></button>
+                    <form v-on:keyup.enter="finishPasswordReset()">
+                        <div class="card-header text-center text-bg-secondary py-2">
+                            Set a new password
+                        </div>
+                        <div class="card-body p-sm-4">
+                            <div class="row gy-3 g-sm-4">
+                                <div class="col-12">
+                                    <input type="password" class="form-control bg-primary-subtle" minlength="8"
+                                        maxlength="255" id="password" placeholder="Password" required
+                                        v-model.trim="password">
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" v-on:click="finishPasswordReset()"
+                                        class="btn btn-success w-100" :disabled="passwordResetInProgress"
+                                        v-text="passwordResetInProgress ? 'Please wait...' : 'Submit'"></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

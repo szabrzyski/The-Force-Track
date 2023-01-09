@@ -27,7 +27,7 @@ function initialize() {
     loadingInProgress.value = true;
     let axiosResponse = axios({
         method: 'GET',
-        url: '/initializeIssues',
+        url: '/initializeIssuesIndexPage',
         timeout: 30000,
     })
         .then((response) => {
@@ -90,44 +90,48 @@ initialize();
     <template v-else>
         <div class="container">
             <div class="row justify-content-center mt-2 mt-sm-3">
-                <Alert />
-                <div class="col-12 col-sm-8 col-md-9 col-lg-10 mb-2 mb-sm-0">
-                    <div class="row">
-                        <div class="col-12 mb-2 mb-sm-3">
-                            <h5 class="text-secondary d-inline"><span>{{ userStore.user.admin ? 'All' : 'My' }}</span>
-                                issues: {{ issues.data ? issues.data.length : 0 }}
-                            </h5>
-                        </div>
-                        <div class="col-12">
-                            <fieldset :disabled="issuesLoadingInProgress">
-                                <h5 class="text-secondary d-inline me-2">Status:
+                <Alert margins="mb-lg-3" />
+                <div class="row p-0 mt-2">
+                    <div class="col-12 col-sm-8 col-md-9 col-lg-10 mb-2 mb-sm-0">
+                        <div class="row">
+                            <div class="col-12 mb-2 mb-sm-3">
+                                <h5 class="text-secondary d-inline"><span>{{
+                                    userStore.user?.admin ? 'All' : 'My'
+                                }}</span>
+                                    issues: {{ issues.data ? issues.data.length : 0 }}
                                 </h5>
-                                <div v-for="status in statuses" :key="status.id" class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" :id="status.id" :value="status.id"
-                                        v-model="selectedStatuses">
-                                    <label class="form-check-label" :for="status.id">{{ status.name }}</label>
+                            </div>
+                            <div class="col-12">
+                                <fieldset :disabled="issuesLoadingInProgress">
+                                    <h5 class="text-secondary d-inline me-2">Status:
+                                    </h5>
+                                    <div v-for="status in statuses" :key="status.id"
+                                        class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" :id="status.id"
+                                            :value="status.id" v-model="selectedStatuses">
+                                        <label class="form-check-label" :for="status.id">{{ status.name }}</label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-3 col-lg-2">
+                        <div class="row justify-content-end">
+                            <fieldset :disabled="issuesLoadingInProgress">
+                                <div class="col-12 text-end mb-3">
+                                    <router-link class="btn btn-success w-100" :class="{disabled : userStore.user?.admin}" activeClass="active"
+                                        :to="{ name: 'addIssue' }">{{ (issuesLoadingInProgress &&
+                                        !userStore.user?.admin) ? 'Please wait...' : 'Add issue' }}</router-link>
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" v-on:click="loadIssues()" class="btn btn-primary w-100">{{
+                                        issuesLoadingInProgress? 'Please wait...': 'Refresh issues'
+                                    }}</button>
                                 </div>
                             </fieldset>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-4 col-md-3 col-lg-2">
-                    <div class="row justify-content-end">
-                        <fieldset :disabled="issuesLoadingInProgress">
-                            <div class="col-12 text-end mb-3">
-                                <button type="button" :disabled="!userStore.user.admin" v-on:click="loadIssues()" class="btn btn-success w-100">{{
-                                    issuesLoadingInProgress? 'Please wait...': 'Add issue'
-                                }}</button>
-                            </div>
-                            <div class="col-12">
-                                <button type="button" v-on:click="loadIssues()" class="btn btn-primary w-100">{{
-                                    issuesLoadingInProgress? 'Please wait...': 'Refresh issues'
-                                }}</button>
-                            </div>
-                        </fieldset>
-                    </div>
-                </div>
-
 
                 <div class="col-12">
                     <div class="col-3">
@@ -148,6 +152,11 @@ initialize();
                                 <tr v-if="issuesLoadingInProgress">
                                     <td colspan="5">
                                         <div class="loading"></div>
+                                    </td>
+                                </tr>
+                                <tr v-else-if="issues.data.length === 0">
+                                    <td class="text-center" colspan="5">
+                                        No issues found.
                                     </td>
                                 </tr>
                                 <tr v-else v-for="issue in issues.data" :key="issue.id">

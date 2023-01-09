@@ -26,14 +26,14 @@ function formValidated() {
 
     if (email.value.length > 0 && email.value.length <= 255 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
     } else {
-        validationErrors.push('Correct the e-mail address');
+        validationErrors.push('E-mail address is invalid');
     }
 
     // Validate password
 
     if (password.value.length >= 8 && password.value.length <= 255) {
     } else {
-        validationErrors.push('Correct the password (min. 8 characters)');
+        validationErrors.push('Password is invalid (min. 8 characters)');
     }
 
     if (validationErrors.length === 0) {
@@ -92,27 +92,30 @@ emit('viewLoaded');
             <Alert columns='col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6' margins='px-md-3 px-xl-4' />
             <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6 mt-2 mt-sm-1 mt-md-2 mt-lg-4">
                 <div class="card">
-                    <div class="card-header text-center text-bg-secondary py-2">
-                        Create account
-                    </div>
-                    <div class="card-body p-sm-4">
-                        <div class="row gy-3 g-sm-4">
-                            <div class="col-12">
-                                <input type="email" v-model.trim="email" class="form-control bg-primary-subtle"
-                                    name="email" id="email" placeholder="E-mail address">
-                            </div>
-                            <div class="col-12">
-                                <input type="password" v-model="password" class="form-control bg-primary-subtle"
-                                    name="password" id="haslo" placeholder="Password (min. 8 characters)" minlength="8"
-                                    maxlength="255">
-                            </div>
-                            <div class="col-12">
-                                <button type="button" v-on:click="createAccount()" class="btn btn-success w-100"
-                                    :disabled="registrationInProgress"
-                                    v-text="registrationInProgress ? 'Please wait...' : 'Continue'"></button>
+                    <form v-on:keyup.enter="createAccount()">
+                        <div class="card-header text-center text-bg-secondary py-2">
+                            Create account
+                        </div>
+                        <div class="card-body p-sm-4">
+                            <div class="row gy-3 g-sm-4">
+                                <div class="col-12">
+                                    <input type="email" v-model.trim="email"
+                                        class="form-control bg-primary-subtle" name="email" id="email"
+                                        placeholder="E-mail address">
+                                </div>
+                                <div class="col-12">
+                                    <input type="password" v-model="password"
+                                        class="form-control bg-primary-subtle" name="password" id="haslo"
+                                        placeholder="Password (min. 8 characters)" minlength="8" maxlength="255">
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" v-on:click="createAccount()" class="btn btn-success w-100"
+                                        :disabled="registrationInProgress"
+                                        v-text="registrationInProgress ? 'Please wait...' : 'Submit'"></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

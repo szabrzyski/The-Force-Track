@@ -3,6 +3,7 @@ import { useUserStore } from './stores/userStore';
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from "./components/Login.vue";
 import Issues from "./components/Issues.vue";
+import AddIssue from "./components/AddIssue.vue";
 import Register from "./components/Register.vue";
 import ResetPassword from "./components/ResetPassword.vue";
 import ResetPasswordFinish from "./components/ResetPasswordFinish.vue";
@@ -21,6 +22,12 @@ const router = createRouter({
             name: 'issues',
             component: Issues,
             meta: { title: 'The Force Track', onlyLoggedUser: true }
+        },
+        {
+            path: '/issues/add',
+            name: 'addIssue',
+            component: AddIssue,
+            meta: { title: 'Add issue', onlyLoggedUser: true }
         },
         {
             path: '/login',

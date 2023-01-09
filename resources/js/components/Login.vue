@@ -104,33 +104,35 @@ initialize();
             <Alert columns='col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6' margins='px-md-3 px-xl-4' />
             <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6 mt-2 mt-sm-1 mt-md-2 mt-lg-4">
                 <div class="card">
-                    <div class="card-header text-center text-bg-secondary py-2">
-                        Log in
-                    </div>
-                    <div class="card-body p-sm-4">
-                        <div class="row gy-3 g-sm-4">
-                            <div class="col-12">
-                                <input type="email" class="form-control bg-primary-subtle" minlength="1" maxlength="255"
-                                    id="email" placeholder="E-mail address" required v-model.trim="email"
-                                    v-on:keyup.enter="loginUser()">
-                            </div>
-                            <div class="col-12">
-                                <input type="password" class="form-control bg-primary-subtle" minlength="8"
-                                    maxlength="255" id="password" placeholder="Password" required
-                                    v-model.trim="password" v-on:keyup.enter="loginUser()">
-                            </div>
-                            <div class="col-12">
-                                <button type="button" v-on:click="loginUser()" class="btn btn-success w-100"
-                                    v-bind:class="{ disabled: loginInProgress }"
-                                    v-text="loginInProgress ? 'Please wait...' : 'Continue'"></button>
-                            </div>
-                            <div class="col-12 text-end">
-                                <router-link class="me-4" :to="{ name: 'register' }">Create new account</router-link>
-                                <router-link :to="{ name: 'resetPassword' }">Reset password</router-link>
+                    <form v-on:keyup.enter="loginUser()">
+                        <div class="card-header text-center text-bg-secondary py-2">
+                            Log in
+                        </div>
+                        <div class="card-body p-sm-4">
+                            <div class="row gy-3 g-sm-4">
+                                <div class="col-12">
+                                    <input type="email" class="form-control bg-primary-subtle" minlength="1"
+                                        maxlength="255" id="email" placeholder="E-mail address" required
+                                        v-model.trim="email" >
+                                </div>
+                                <div class="col-12">
+                                    <input type="password" class="form-control bg-primary-subtle" minlength="8"
+                                        maxlength="255" id="password" placeholder="Password" required
+                                        v-model.trim="password">
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" v-on:click="loginUser()" class="btn btn-success w-100"
+                                        v-bind:class="{ disabled: loginInProgress }"
+                                        v-text="loginInProgress ? 'Please wait...' : 'Submit'"></button>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <router-link class="me-4" :to="{ name: 'register' }">Create new
+                                        account</router-link>
+                                    <router-link :to="{ name: 'resetPassword' }">Reset password</router-link>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
+                    </form>
                 </div>
             </div>
         </div>
