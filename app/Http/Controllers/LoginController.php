@@ -33,7 +33,7 @@ class LoginController extends Controller
         $password = $request->password;
 
         if (Auth::attemptWhen(['email' => $email, 'password' => $password], function ($user) {
-            
+
             // Allow only verified users to login
 
             return $user->isVerified();
@@ -44,7 +44,11 @@ class LoginController extends Controller
             // Add redirect link if user intended to visit protected page
 
             $intendedUrl = redirect()->getIntendedUrl();
-            $redirectTo = $intendedUrl ?  Str::after($intendedUrl, route('issues', [], true)) : route('issues', [], false);
+            $redirectTo = $intendedUrl ? Str::after($intendedUrl, route('issues', [], true)) : route('issues', [], false);
+
+            if ($redirectTo == "") {
+                $redirectTo = "/";
+            }
 
             return response()->json(['redirectTo' => $redirectTo, 'user' => $user], 200);
         }
