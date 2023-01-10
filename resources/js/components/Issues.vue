@@ -125,7 +125,7 @@ initialize();
                                 <h5 class="text-secondary d-inline"><span>{{
                                     userStore.user?.admin ? 'All' : 'My'
                                 }}</span>
-                                    issues: {{ issues.data ? issues.data.length : 0 }}
+                                    issues: {{ issues.total ? issues.total : 0 }}
                                 </h5>
                             </div>
                             <div class="col-12">
