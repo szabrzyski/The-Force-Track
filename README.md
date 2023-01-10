@@ -8,6 +8,7 @@ Features:
 - Add new issues and comments
 - Update the issue status as admin
 - Get e-mail notification for the issue status update
+- Authentication and authorization system with password reset
 
 ## Instruction
 
@@ -44,3 +45,13 @@ Features:
 <code>php artisan queue:work --queue=emails;</code>
 
 9. Login with any account from the users table, the password is "password"
+
+## Screenshots
+
+![Index page](/screenshots/1.png)
+
+![Add issue](/screenshots/2.png)
+
+![Issue details](/screenshots/3.png)
+
+![Login page](/screenshots/4.png)
