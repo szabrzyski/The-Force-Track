@@ -115,7 +115,7 @@ class RegisterController extends Controller
             
             // There's no user associated with provided verification code
 
-            session(['alert' => json_encode(['page' => 'logowanie', 'message' => 'The activation link is invalid.', 'type' => 'error'])]);
+            session(['alert' => json_encode(['page' => 'login', 'message' => 'The activation link is invalid.', 'type' => 'error'])]);
 
             return redirect()->route('login');
         }
