@@ -1,8 +1,20 @@
-## The Force Track
+# The Force Track
 
-A simple reporting system made with Laravel 9 and Vue 3.
+A simple reporting system.
 
-Features:
+## Technologies used
+
+- Laravel 9
+- Vue 3
+- Bootstrap 5
+- Font Awesome
+- Nginx
+- MariaDB
+- Redis
+- MailCatcher
+- Docker
+
+## Features
 
 - Browse issues using pagination and filter by status
 - Add new issues and comments
