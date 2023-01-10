@@ -65,7 +65,7 @@ const router = createRouter({
         {
             path: '/:pathMatch(.*)*',
             name: 'notFound',
-            redirect: { name: 'issues' }
+            component: Issues,
         },
     ],
 });

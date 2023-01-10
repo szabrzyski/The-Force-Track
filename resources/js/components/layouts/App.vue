@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
 import Header from './Header.vue'
 import Footer from './Footer.vue';
 import ToastMessage from '../partials/ToastMessage.vue';
