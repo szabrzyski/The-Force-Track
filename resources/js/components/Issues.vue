@@ -5,6 +5,7 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import Alert from './partials/Alert.vue';
 import PaginationBar from './partials/PaginationBar.vue';
+import InitializeError from './partials/InitializeError.vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const emit = defineEmits(['viewLoaded']);
@@ -15,6 +16,7 @@ const router = useRouter();
 const route = useRoute();
 
 const loadingInProgress = ref(true);
+const errorOccured = ref(false);
 const issuesLoadingInProgress = ref(true);
 const issues = ref([]);
 const statuses = ref([]);
@@ -38,6 +40,8 @@ const defaultSelectedStatuses = computed(() => {
 
 function initialize() {
     loadingInProgress.value = true;
+    errorOccured.value = false;
+
     let axiosResponse = axios({
         method: 'GET',
         url: '/issues/initializeIssuesIndexPage',
@@ -52,6 +56,7 @@ function initialize() {
         })
         .catch(function (error) {
             globalStore.handleError(error);
+            errorOccured.value = true;
         })
         .then(function () {
             loadingInProgress.value = false;
@@ -109,7 +114,7 @@ initialize();
 <template>
     <div v-if="loadingInProgress" class="loading">
     </div>
-    <template v-else>
+    <template v-else-if="!errorOccured">
         <div class="container">
             <div class="row justify-content-center mt-2 mt-sm-3">
                 <Alert margins="mb-lg-3" />
@@ -199,5 +204,5 @@ initialize();
             </div>
         </div>
     </template>
-
+    <InitializeError v-else v-on:reinitialize="initialize()" />
 </template>

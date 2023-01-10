@@ -3,6 +3,7 @@
 import { ref } from 'vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import { useRouter } from 'vue-router';
+import InitializeError from './partials/InitializeError.vue';
 
 const emit = defineEmits(['viewLoaded']);
 
@@ -10,6 +11,7 @@ const globalStore = useGlobalStore();
 const router = useRouter();
 
 const loadingInProgress = ref(true);
+const errorOccured = ref(false);
 const addingIssueInProgress = ref(false);
 const categories = ref([]);
 const category = ref(null);
@@ -20,6 +22,8 @@ const description = ref("");
 
 function initialize() {
     loadingInProgress.value = true;
+    errorOccured.value = false;
+
     let axiosResponse = axios({
         method: 'GET',
         url: '/issues/initializeAddIssuePage',
@@ -30,6 +34,7 @@ function initialize() {
         })
         .catch(function (error) {
             globalStore.handleError(error);
+            errorOccured.value = true;
         })
         .then(function () {
             loadingInProgress.value = false;
@@ -118,7 +123,7 @@ initialize();
 <template>
     <div v-if="loadingInProgress" class="loading">
     </div>
-    <template v-else>
+    <template v-else-if="!errorOccured">
         <div class="container">
             <div class="row justify-content-center mt-2 mt-sm-3">
                 <div class="col-12">
@@ -164,5 +169,5 @@ initialize();
             </div>
         </div>
     </template>
-
+    <InitializeError v-else v-on:reinitialize="initialize()" />
 </template>

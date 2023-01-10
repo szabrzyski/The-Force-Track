@@ -3,6 +3,7 @@
 import { ref, watch } from 'vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
+import InitializeError from './partials/InitializeError.vue';
 
 const props = defineProps({
     issueId: [String, Number],
@@ -14,6 +15,7 @@ const globalStore = useGlobalStore();
 const userStore = useUserStore();
 
 const loadingInProgress = ref(true);
+const errorOccured = ref(false);
 const updatingIssueInProgress = ref(false);
 const issue = ref(null);
 const selectedStatus = ref(null);
@@ -23,7 +25,9 @@ const comment = ref("");
 // Initialize the page
 
 function initialize() {
+
     loadingInProgress.value = true;
+    errorOccured.value = false;
     let axiosResponse = axios({
         method: 'GET',
         url: '/issue/' + props.issueId + '/initializeIssueDetailsPage',
@@ -36,6 +40,7 @@ function initialize() {
         })
         .catch(function (error) {
             globalStore.handleError(error);
+            errorOccured.value = true;
         })
         .then(function () {
             loadingInProgress.value = false;
@@ -127,7 +132,7 @@ initialize();
 <template>
     <div v-if="loadingInProgress" class="loading">
     </div>
-    <template v-else>
+    <template v-else-if="!errorOccured">
         <div class="container">
             <div class="row justify-content-center mt-2 mt-sm-3">
                 <div class="col-12">
@@ -189,5 +194,5 @@ initialize();
             </div>
         </div>
     </template>
-
+    <InitializeError v-else v-on:reinitialize="initialize()" />
 </template>
