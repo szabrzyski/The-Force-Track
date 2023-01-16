@@ -5,6 +5,12 @@ import { useUserStore } from './userStore.js';
 
 export const useGlobalStore = defineStore('globalStore', () => {
 
+    // Stores
+
+    const userStore = useUserStore();
+
+    // State
+
     const loadingInProgress = ref(true);
     const errorOccured = ref(false);
     const toastMessageElement = ref(null);
@@ -14,7 +20,8 @@ export const useGlobalStore = defineStore('globalStore', () => {
         type: null,
         message: null
     });
-    const userStore = useUserStore();
+
+    // Methods
 
     // Set toast message element
 

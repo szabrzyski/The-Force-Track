@@ -19,8 +19,12 @@ class IssuePolicy
     {
     }
 
-    // Allow everything if the user is admin
-
+    /**
+     * Allow everything if the user is admin.
+     *
+     * @param  User  $user
+     * @return bool
+     */
     public function before(User $user)
     {
         if ($user->isAdmin()) {
@@ -28,8 +32,13 @@ class IssuePolicy
         }
     }
 
-    // Check if the user is the author of the post
-
+    /**
+     * Check if the user is the author of the post.
+     *
+     * @param  User  $user
+     * @param  Issue  $issue
+     * @return bool
+     */
     public function show(User $user, Issue $issue)
     {
         return $issue->user->is($user);

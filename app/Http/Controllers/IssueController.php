@@ -15,8 +15,11 @@ use Illuminate\Http\Request;
 
 class IssueController extends Controller
 {
-    // Initialize page for listing issues
-
+    /**
+     * Initialize page for listing issues.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function initializeIssuesIndexPage()
     {
         $statuses = Status::orderByDesc('default')->get();
@@ -24,8 +27,11 @@ class IssueController extends Controller
         return response()->json($statuses, 200);
     }
 
-    // Initialize page for adding issues
-
+    /**
+     * Initialize page for adding issues.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function initializeAddIssuePage()
     {
         $categories = Category::all();
@@ -33,8 +39,11 @@ class IssueController extends Controller
         return response()->json($categories, 200);
     }
 
-    // Initialize page for issue details
-
+    /**
+     * Initialize page for issue details
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function initializeIssueDetailsPage(Request $request, Issue $issue)
     {
         $statuses = Status::all();
@@ -42,18 +51,20 @@ class IssueController extends Controller
         return response()->json(['issue' => $issue->load(['category', 'status', 'comments']), 'statuses' => $statuses], 200);
     }
 
-    // Get issues with specified statuses
-
+    /**
+     * Get issues with specified statuses.
+     *
+     * @param  LoadIssuesRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function loadIssues(LoadIssuesRequest $request)
     {
-
         $user = $request->user();
         $selectedStatuses = $request->selectedStatuses;
 
         $issues = Issue::when($selectedStatuses !== null, function ($query) use ($selectedStatuses) {
             $query->whereIn('status_id', $selectedStatuses);
-        })->when(!$user->isAdmin(), function ($query) use ($user) {
-
+        })->when(! $user->isAdmin(), function ($query) use ($user) {
             // If the user is admin, get all issues. Otherwise, get only those issues owned by the user.
 
             $query->where('user_id', $user->id);
@@ -62,8 +73,12 @@ class IssueController extends Controller
         return response()->json($issues, 200);
     }
 
-    // Add new issue
-
+    /**
+     * Add new issue.
+     *
+     * @param  AddIssueRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addIssue(AddIssueRequest $request)
     {
         $status = Status::where('name', 'Open')->firstOrFail();
@@ -82,8 +97,13 @@ class IssueController extends Controller
         }
     }
 
-    // Update issue status
-
+    /**
+     * Update issue status.
+     *
+     * @param  UpdateIssueStatusRequest  $request
+     * @param  Issue  $issue
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateIssueStatus(UpdateIssueStatusRequest $request, Issue $issue)
     {
         $newStatus = $request->newStatus;
@@ -99,7 +119,6 @@ class IssueController extends Controller
         $issue->status()->associate($status);
 
         if ($issue->save()) {
-
             // Send a notification to the author of the issue
 
             $issue->user->notify(new IssueStatusChanged($status->name, $issue->id));
@@ -110,11 +129,15 @@ class IssueController extends Controller
         }
     }
 
-    // Add new comment
-
+    /**
+     * Add new comment to the issue.
+     *
+     * @param  AddIssueCommentRequest  $request
+     * @param  Issue  $issue
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addIssueComment(AddIssueCommentRequest $request, Issue $issue)
     {
-
         $comment = new Comment;
         $comment->issue()->associate($issue);
         $comment->user()->associate($request->user());
@@ -126,5 +149,4 @@ class IssueController extends Controller
             return response()->json('An error occured', 420);
         }
     }
-
 }

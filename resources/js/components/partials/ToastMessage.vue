@@ -3,8 +3,15 @@
 import { ref, onMounted } from 'vue'
 import { useGlobalStore } from '../../stores/globalStore.js';
 
+// Stores
+
 const globalStore = useGlobalStore();
+
+// HTML references
+
 const toastMessageElement = ref(null);
+
+// Lifecycle
 
 onMounted(() => {
     globalStore.setToastMessageElement(toastMessageElement.value);

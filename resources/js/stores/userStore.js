@@ -5,11 +5,21 @@ import { useGlobalStore } from './globalStore';
 
 export const useUserStore = defineStore('userStore', () => {
 
+    // Stores
+
+    const globalStore = useGlobalStore();
+
+    // Routes
+
+    const router = useRouter();
+
+    // State
+
     const user = ref(null);
     const email = ref('');
     const password = ref('');
-    const router = useRouter();
-    const globalStore = useGlobalStore();
+
+    // Computed
 
     const emailReactive = computed(() => {
         return email;
@@ -18,6 +28,8 @@ export const useUserStore = defineStore('userStore', () => {
     const passwordReactive = computed(() => {
         return password;
     })
+
+    // Methods
 
     // Set user login data shared between views
 

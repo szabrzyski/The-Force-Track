@@ -6,8 +6,15 @@ import ToastMessage from '../partials/ToastMessage.vue';
 import InitializeError from '../partials/InitializeError.vue';
 import { useGlobalStore } from '../../stores/globalStore.js';
 
+// Stores
+
 const globalStore = useGlobalStore();
+
+// Data
+
 const viewIsLoaded = ref(false);
+
+// Computed
 
 const showApp = computed(() => {
     return !globalStore.loadingInProgress && (globalStore.errorOccured || viewIsLoaded.value);

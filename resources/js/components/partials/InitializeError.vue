@@ -1,5 +1,7 @@
 <script setup>
 
+// Emits
+
 const emit = defineEmits(['reinitialize']);
 
 </script>

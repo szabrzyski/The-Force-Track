@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class UserIsNotAdmin
 {
     /**
-     * Handle an incoming request.
+     * Check if user is not admin.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

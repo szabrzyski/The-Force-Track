@@ -14,14 +14,17 @@ use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
-    // Send password reset link to the user
-
+    /**
+     * Send password reset link to the user.
+     *
+     * @param  ResetPasswordRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function resetPassword(ResetPasswordRequest $request)
     {
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-
             // There's user associated with provided e-mail
 
             // Generate verification code
@@ -45,8 +48,12 @@ class ResetPasswordController extends Controller
         return response()->json('Success', 200);
     }
 
-    // Update user password
-
+    /**
+     * Update user password.
+     *
+     * @param  ResetPasswordFinishRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function resetPasswordFinish(ResetPasswordFinishRequest $request)
     {
         $verificationCode = Crypt::decryptString($request->verificationCode);

@@ -6,17 +6,28 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import Alert from './partials/Alert.vue';
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Stores
+
+const globalStore = useGlobalStore();
+const userStore = useUserStore();
+
+// Routing
+
+const router = useRouter();
+
+// Data
 
 const email = ref("");
 const password = ref("");
 const registrationInProgress = ref(false);
 
-const globalStore = useGlobalStore();
-const userStore = useUserStore();
-const router = useRouter();
+// Methods
 
-//Form validation
+// Form validation
 
 function formValidated() {
 
@@ -99,14 +110,13 @@ emit('viewLoaded');
                         <div class="card-body p-sm-4">
                             <div class="row gy-3 g-sm-4">
                                 <div class="col-12">
-                                    <input type="email" v-model.trim="email"
-                                        class="form-control bg-primary-subtle" name="email" id="email"
-                                        placeholder="E-mail address">
+                                    <input type="email" v-model.trim="email" class="form-control bg-primary-subtle"
+                                        name="email" id="email" placeholder="E-mail address">
                                 </div>
                                 <div class="col-12">
-                                    <input type="password" v-model="password"
-                                        class="form-control bg-primary-subtle" name="password" id="haslo"
-                                        placeholder="Password (min. 8 characters)" minlength="8" maxlength="255">
+                                    <input type="password" v-model="password" class="form-control bg-primary-subtle"
+                                        name="password" id="haslo" placeholder="Password (min. 8 characters)"
+                                        minlength="8" maxlength="255">
                                 </div>
                                 <div class="col-12">
                                     <button type="button" v-on:click="createAccount()" class="btn btn-success w-100"

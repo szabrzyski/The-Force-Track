@@ -9,16 +9,18 @@ use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
-    // Login the user
-
+    /**
+     * Login the user.
+     *
+     * @param  LoginUserRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function loginUser(LoginUserRequest $request)
     {
-
         $email = $request->email;
         $password = $request->password;
 
         if (Auth::attemptWhen(['email' => $email, 'password' => $password], function ($user) {
-
             // Allow only verified users to login
 
             return $user->isVerified();
@@ -31,8 +33,8 @@ class LoginController extends Controller
             $intendedUrl = redirect()->getIntendedUrl();
             $redirectTo = $intendedUrl ? Str::after($intendedUrl, route('issues', [], true)) : route('issues', [], false);
 
-            if ($redirectTo == "") {
-                $redirectTo = "/";
+            if ($redirectTo == '') {
+                $redirectTo = '/';
             }
 
             return response()->json(['redirectTo' => $redirectTo, 'user' => $user], 200);
@@ -41,8 +43,12 @@ class LoginController extends Controller
         return response()->json('Invalid login data', 420);
     }
 
-    // Logout the user
-
+    /**
+     * Logout the user.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logoutUser(Request $request)
     {
         Auth::logout();

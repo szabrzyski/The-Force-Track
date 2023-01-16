@@ -9,6 +9,8 @@ import Register from "./components/Register.vue";
 import ResetPassword from "./components/ResetPassword.vue";
 import ResetPasswordFinish from "./components/ResetPasswordFinish.vue";
 
+// Routing
+
 const router = createRouter({
     scrollBehavior() {
         return {
@@ -70,6 +72,8 @@ const router = createRouter({
     ],
 });
 
+// Before each route
+
 router.beforeEach(async (to) => {
 
     const globalStore = useGlobalStore();
@@ -97,6 +101,8 @@ router.beforeEach(async (to) => {
         }
     }
 })
+
+// Before resolving each route
 
 router.beforeResolve(async (to) => {
     if (to.meta.title) {

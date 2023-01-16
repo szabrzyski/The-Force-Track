@@ -39,7 +39,6 @@ class CreateTestDatabase extends Command
      */
     public function handle()
     {
-
         try {
             User::factory()->hasIssues(3)->hasComments(10)->count(50)->create();
             $this->info('Test database created.');

@@ -4,7 +4,11 @@ import { useGlobalStore } from '../../stores/globalStore.js';
 import { computed } from 'vue';
 import { useRoute, onBeforeRouteLeave } from 'vue-router';
 
+// Stores
+
 const globalStore = useGlobalStore();
+
+// Props
 
 const props = defineProps({
     margins: String,
@@ -12,11 +16,15 @@ const props = defineProps({
     alert: Object,
 });
 
+// Routes
+
+const route = useRoute();
+
+// Computed
+
 const pageMatch = computed(() => {
     return globalStore.alert.page === route.name;
 })
-
-const route = useRoute();
 
 const showAlert = computed(() => {
     return props.alert || pageMatch.value;
@@ -29,6 +37,8 @@ const alertType = computed(() => {
 const alertMessage = computed(() => {
     return props.alert ? props.alert.message : pageMatch.value ? globalStore.alert.message : null;
 })
+
+// Lifecycle
 
 onBeforeRouteLeave((to, from) => {
     if (globalStore.alert.page === from.name) {

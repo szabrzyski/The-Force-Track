@@ -2,9 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Mail\IssueStatusChangedEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Mail\IssueStatusChangedEmail;
 use Illuminate\Notifications\Notification;
 
 class IssueStatusChanged extends Notification implements ShouldQueue
@@ -38,11 +38,11 @@ class IssueStatusChanged extends Notification implements ShouldQueue
     }
 
     public function viaQueues()
-{
-    return [
-        'mail' => 'emails',
-    ];
-}
+    {
+        return [
+            'mail' => 'emails',
+        ];
+    }
 
 /**
  * Get the mail representation of the notification.
@@ -52,7 +52,7 @@ class IssueStatusChanged extends Notification implements ShouldQueue
  */
 public function toMail($notifiable)
 {
-    return (new IssueStatusChangedEmail($this->newStatus,$this->issueId))
+    return (new IssueStatusChangedEmail($this->newStatus, $this->issueId))
                 ->to($notifiable->email);
 }
 
@@ -66,7 +66,7 @@ public function toMail($notifiable)
     {
         return [
             'newStatus' => $this->newStatus,
-            'issueId' => $this->issueId
+            'issueId' => $this->issueId,
         ];
     }
 }

@@ -3,19 +3,15 @@
 @import "/node_modules/@fortawesome/fontawesome-free/css/brands.min.css";
 @import "/node_modules/@fortawesome/fontawesome-free/css/solid.min.css";
 
-.pagination li {
-    cursor: pointer;
-}
-
-.navbar-brand span {
-    color: #242424;
-}
+/* Body */
 
 body {
     font-size: 1rem;
     font-family: 'Trebuchet MS', Verdana, Arial;
     overflow: auto;
 }
+
+/* Loading screens */
 
 .app-loading {
 
@@ -60,6 +56,18 @@ body {
     border-radius: 50%;
     -webkit-animation: .75s linear infinite spinner-border;
     animation: .75s linear infinite spinner-border;
+}
+
+/* Navbar */
+
+.navbar-brand span {
+    color: #242424;
+}
+
+/* General */
+
+.pagination li {
+    cursor: pointer;
 }
 
 .pointer:hover {

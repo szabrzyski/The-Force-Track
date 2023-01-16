@@ -2,6 +2,8 @@
 
 import { useUserStore } from '../../stores/userStore.js';
 
+// Stores
+
 const userStore = useUserStore();
 
 </script>

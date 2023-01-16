@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class UserIsAdmin
 {
     /**
-     * Handle an incoming request.
+     * Check if user is admin.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

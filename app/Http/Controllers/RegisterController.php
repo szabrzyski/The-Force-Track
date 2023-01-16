@@ -14,8 +14,12 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    // Create new user account
-
+    /**
+     * Create new user account.
+     *
+     * @param  CreateUserRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function createAccount(CreateUserRequest $request)
     {
         // Generate verification link
@@ -28,7 +32,6 @@ class RegisterController extends Controller
         $newUser->verification_code = $verificationCode;
 
         if ($newUser->save()) {
-
             // Send e-mail with verification link
 
             $email = new VerificationEmail(Crypt::encryptString($verificationCode));
@@ -42,8 +45,13 @@ class RegisterController extends Controller
         }
     }
 
-    // Active user account
-
+    /**
+     * Activate user account.
+     *
+     * @param  Request  $request
+     * @param  string  $verificationCode
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function activateAccount(Request $request, string $verificationCode)
     {
         $verificationCode = Crypt::decryptString($verificationCode);
@@ -53,15 +61,13 @@ class RegisterController extends Controller
         $user = User::where('verification_code', $verificationCode)->first();
 
         if ($user) {
-            if (!$user->verificationCodeIsValid()) {
-
+            if (! $user->verificationCodeIsValid()) {
                 // Verification code expired
 
                 session(['alert' => json_encode(['message' => 'The activation link is expired.', 'type' => 'error'])]);
 
                 return redirect()->route('login');
             } else {
-
                 // Verification code is valid, activate the user account
 
                 $user->verification_code = null;
@@ -69,7 +75,6 @@ class RegisterController extends Controller
 
                 if ($user->save()) {
                     if ($request->session()->get('userEmail') === $user->email) {
-
                         // Login & redirect the user to homepage if his e-mail is in the session
 
                         $request->session()->forget('userEmail');
@@ -86,7 +91,6 @@ class RegisterController extends Controller
 
                     return redirect()->route('login', ['email' => $user->email]);
                 } else {
-
                     // An error occured when saving the user
 
                     session(['alert' => json_encode(['page' => 'login', 'message' => 'An error occuerd.', 'type' => 'error'])]);
@@ -95,7 +99,6 @@ class RegisterController extends Controller
                 }
             }
         } else {
-
             // There's no user associated with provided verification code
 
             session(['alert' => json_encode(['page' => 'login', 'message' => 'The activation link is invalid.', 'type' => 'error'])]);

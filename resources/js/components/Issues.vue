@@ -8,12 +8,21 @@ import PaginationBar from './partials/PaginationBar.vue';
 import InitializeError from './partials/InitializeError.vue';
 import { useRouter, useRoute } from 'vue-router';
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Stores
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
+
+// Routing
+
 const router = useRouter();
 const route = useRoute();
+
+// Data
 
 const loadingInProgress = ref(true);
 const errorOccured = ref(false);
@@ -22,12 +31,16 @@ const issues = ref([]);
 const statuses = ref([]);
 const selectedStatuses = ref([]);
 
+// Watchers
+
 watch(selectedStatuses, (newSelectedStatuses) => {
     if (!loadingInProgress.value) {
         globalStore.saveLocalData('selectedStatuses', newSelectedStatuses, true);
         loadIssues();
     }
 })
+
+// Methods
 
 // Get statuses that are selected by default on the page
 

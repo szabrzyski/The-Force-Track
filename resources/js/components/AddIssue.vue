@@ -5,10 +5,16 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useRouter } from 'vue-router';
 import InitializeError from './partials/InitializeError.vue';
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Stores
 
 const globalStore = useGlobalStore();
 const router = useRouter();
+
+// Data
 
 const loadingInProgress = ref(true);
 const errorOccured = ref(false);
@@ -17,6 +23,8 @@ const categories = ref([]);
 const category = ref(null);
 const subject = ref("");
 const description = ref("");
+
+// Methods
 
 // Initialize the page
 

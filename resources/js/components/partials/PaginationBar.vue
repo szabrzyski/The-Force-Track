@@ -1,8 +1,12 @@
 <script setup>
 
+// Props
+
 const props = defineProps({
     issues: Object,
 });
+
+// Emits
 
 const emit = defineEmits(['paginateIssues']);
 

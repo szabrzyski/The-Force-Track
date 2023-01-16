@@ -5,14 +5,22 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import InitializeError from './partials/InitializeError.vue';
 
+// Props
+
 const props = defineProps({
     issueId: [String, Number],
 });
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Stores
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
+
+// Data
 
 const loadingInProgress = ref(true);
 const errorOccured = ref(false);
@@ -21,6 +29,8 @@ const issue = ref(null);
 const selectedStatus = ref(null);
 const statuses = ref([]);
 const comment = ref("");
+
+// Methods
 
 // Initialize the page
 

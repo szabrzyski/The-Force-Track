@@ -6,14 +6,25 @@ import Alert from './partials/Alert.vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Stores
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
+
+// Routing
+
 const router = useRouter();
+
+// Data
 
 const email = ref("");
 const passwordResetInProgress = ref(false);
+
+// Methods
 
 // Send the password reset link
 

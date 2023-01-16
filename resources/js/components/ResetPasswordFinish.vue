@@ -6,20 +6,32 @@ import { ref } from 'vue';
 import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Props
 
 const props = defineProps({
     verificationCode: String,
 });
 
+// Stores
+
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
+
+// Routing
 
 const router = useRouter();
 const route = useRoute();
 
+// Data
+
 const password = ref('');
 const passwordResetInProgress = ref(false);
+
+// Methods
 
 // Update user password
 

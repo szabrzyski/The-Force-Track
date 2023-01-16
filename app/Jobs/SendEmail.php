@@ -21,8 +21,10 @@ class SendEmail implements ShouldQueue
     public $deleteWhenMissingModels = true;
 
     /**
-     * Create a new job instance.
+     * Create a new job instance and put it on specific queue.
      *
+     * @param  string  $emailAddress
+     * @param  Mailable  $email
      * @return void
      */
     public function __construct(public string $emailAddress, public Mailable $email)
@@ -31,7 +33,7 @@ class SendEmail implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * Send the e-mail.
      *
      * @return void
      */

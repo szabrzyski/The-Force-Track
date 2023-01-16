@@ -40,7 +40,7 @@ class IssueStatusChangedEmail extends Mailable
             markdown:'emails.issueStatusChangedEmail',
             with:[
                 'newStatus' => $this->newStatus,
-                'issueId' => $this->issueId
+                'issueId' => $this->issueId,
             ],
         );
     }

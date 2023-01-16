@@ -6,16 +6,27 @@ import { useGlobalStore } from '../stores/globalStore.js';
 import { useUserStore } from '../stores/userStore.js';
 import { useRouter, useRoute } from 'vue-router';
 
+// Emits
+
 const emit = defineEmits(['viewLoaded']);
+
+// Stores
 
 const globalStore = useGlobalStore();
 const userStore = useUserStore();
+
+// Routing
+
 const router = useRouter();
 const route = useRoute();
+
+// Data
 
 const loginInProgress = ref(false);
 const email = userStore.emailReactive;
 const password = userStore.passwordReactive;
+
+// Methods
 
 // Initialize the page
 
