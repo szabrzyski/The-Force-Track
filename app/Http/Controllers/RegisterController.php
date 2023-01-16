@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUserRequest;
 use App\Jobs\SendEmail;
 use App\Mail\VerificationEmail;
 use App\Models\User;
@@ -9,32 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
     // Create new user account
 
-    public function createAccount(Request $request)
+    public function createAccount(CreateUserRequest $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email|min:1|max:255|unique:users,email',
-                'password' => 'required|min:8|max:255',
-            ],
-            [
-                'email.unique' => 'E-mail address already exists',
-                'email.*' => 'Invalid e-mail address',
-                'password.*' => 'Invalid password',
-            ]
-        );
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
-
         // Generate verification link
 
         $verificationCode = Hash::make(Str::random(64));
@@ -70,7 +53,7 @@ class RegisterController extends Controller
         $user = User::where('verification_code', $verificationCode)->first();
 
         if ($user) {
-            if (! $user->verificationCodeIsValid()) {
+            if (!$user->verificationCodeIsValid()) {
 
                 // Verification code expired
 
@@ -112,7 +95,7 @@ class RegisterController extends Controller
                 }
             }
         } else {
-            
+
             // There's no user associated with provided verification code
 
             session(['alert' => json_encode(['page' => 'login', 'message' => 'The activation link is invalid.', 'type' => 'error'])]);

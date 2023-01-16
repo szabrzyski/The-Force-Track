@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddIssueCommentRequest;
+use App\Http\Requests\AddIssueRequest;
+use App\Http\Requests\LoadIssuesRequest;
+use App\Http\Requests\UpdateIssueStatusRequest;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Issue;
 use App\Models\Status;
 use App\Notifications\IssueStatusChanged;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class IssueController extends Controller
 {
@@ -41,21 +44,8 @@ class IssueController extends Controller
 
     // Get issues with specified statuses
 
-    public function loadIssues(Request $request)
+    public function loadIssues(LoadIssuesRequest $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'selectedStatuses' => 'sometimes|present|array|exists:App\Models\Status,id',
-            ],
-            [
-                'selectedStatuses.*' => 'Invalid selected statuses',
-            ]
-        );
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
 
         $user = $request->user();
         $selectedStatuses = $request->selectedStatuses;
@@ -74,26 +64,8 @@ class IssueController extends Controller
 
     // Add new issue
 
-    public function addIssue(Request $request)
+    public function addIssue(AddIssueRequest $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'subject' => 'required|string|min:1|max:255',
-                'description' => 'required|string|min:1|max:65535',
-                'category' => 'required|integer|numeric|exists:App\Models\Category,id',
-            ],
-            [
-                'subject.*' => 'Invalid subject',
-                'description.*' => 'Invalid description',
-                'category.*' => 'Invalid category',
-            ]
-        );
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
-
         $status = Status::where('name', 'Open')->firstOrFail();
 
         $issue = new Issue;
@@ -112,32 +84,14 @@ class IssueController extends Controller
 
     // Update issue status
 
-    public function updateIssueStatus(Request $request, Issue $issue)
+    public function updateIssueStatus(UpdateIssueStatusRequest $request, Issue $issue)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'newStatus' => 'required|integer|numeric|exists:App\Models\Status,id',
-            ],
-            [
-                'newStatus.*' => 'Invalid status',
-            ]
-        );
+        $newStatus = $request->newStatus;
 
         // Check if the new status differs from the current status
 
-        $newStatus = $request->newStatus;
-
-        $validator->after(function ($validator) use ($issue, $newStatus) {
-            if ($issue->status_id == $newStatus) {
-                $validator->errors()->add(
-                    'newStatus', 'Issue already has this status'
-                );
-            }
-        });
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
+        if ($issue->status_id == $newStatus) {
+            return response()->json('Issue already has this status', 420);
         }
 
         $status = Status::where('id', $newStatus)->firstOrFail();
@@ -158,24 +112,8 @@ class IssueController extends Controller
 
     // Add new comment
 
-    public function addIssueComment(Request $request, Issue $issue)
+    public function addIssueComment(AddIssueCommentRequest $request, Issue $issue)
     {
-
-        $this->authorize('show', $issue);
-
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'comment' => 'required|string|min:1|max:65535',
-            ],
-            [
-                'comment.*' => 'Invalid comment',
-            ]
-        );
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
 
         $comment = new Comment;
         $comment->issue()->associate($issue);

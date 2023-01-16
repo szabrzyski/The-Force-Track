@@ -2,40 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ResetPasswordFinishRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Jobs\SendEmail;
 use App\Mail\ResetPasswordEmail;
 use App\Models\PasswordReset;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
     // Send password reset link to the user
 
-    public function resetPassword(Request $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email',
-            ],
-            [
-                'email.*' => 'Invalid e-mail address',
-            ]
-        );
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
-
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-            
+
             // There's user associated with provided e-mail
 
             // Generate verification code
@@ -61,20 +47,8 @@ class ResetPasswordController extends Controller
 
     // Update user password
 
-    public function resetPasswordFinish(Request $request)
+    public function resetPasswordFinish(ResetPasswordFinishRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'password' => 'required|string|min:8|max:255',
-            'verificationCode' => 'required|string',
-        ], [
-            'password.*' => 'Password is invalid',
-            'verificationCode.*' => 'Verification code is invalid or expired',
-        ]);
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
-
         $verificationCode = Crypt::decryptString($request->verificationCode);
 
         $passwordReset = PasswordReset::where('verification_code', $verificationCode)->first();

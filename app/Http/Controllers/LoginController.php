@@ -2,32 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
     // Login the user
 
-    public function loginUser(Request $request)
+    public function loginUser(LoginUserRequest $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email|min:1|max:255',
-                'password' => 'required|string|min:8|max:255',
-            ],
-            [
-                'email.*' => 'Invalid e-mail address',
-                'password.*' => 'Invalid password',
-            ]
-        );
-
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return response()->json($validator->errors(), 427);
-        }
 
         $email = $request->email;
         $password = $request->password;
